@@ -832,7 +832,6 @@ The computational requirements fall within typical academic research capabilitie
 - Storage: ~500GB for complete dataset
 
 **Real Data Acquisition** (Moderate Risk):
-- Stanford SNF access confirmed: $2,000/month academic rate
 - Estimated 50-100 matched optical-SEM pairs achievable
 - Alternative: Collaboration with industry partners (TSMC, KLA, Applied Materials have academic programs)
 
@@ -968,28 +967,399 @@ The proposed research demonstrates strong feasibility across all critical dimens
 ## 5. Timeline and Milestones
 
 
-    [To add]
+
+## 5.1 Implementation Timeline Overview (13 Months)
+
+```
+Month  1-2:  Synthetic Data Pipeline & Baseline Implementation
+Month  3-4:  Core Deep Learning Models Development
+Month  5-6:  Advanced Architectures & Physics Integration  
+Month  7-8:  Training, Optimization & Synthetic Benchmarking
+Month  9-10: Real-World Data Acquisition & Validation
+Month   11:  Comprehensive Analysis & Tool Development
+Month 12-13: Thesis Writing, Defense & Publication
+```
+
+## 5.2 Detailed Phase Breakdown
+
+### Phase 1: Data Generation & Foundation (Months 1-2)
+
+**Month 1: Synthetic Data Pipeline Development**
+- Week 1: TCAD process simulation setup and validation
+- Week 2: Pattern library development (gratings, contacts, logic cells)
+- Week 3: Optical simulation implementation (PSF/OTF modeling)
+- Week 4: Noise and degradation pipeline completion
+
+*Deliverable*: 10,000 synthetic image pairs with documented generation pipeline
+
+**Month 2: Baseline Implementation & Framework**
+- Week 1: Richardson-Lucy and Wiener filter implementation
+- Week 2: Evaluation metrics framework (PSNR, SSIM, CD accuracy)
+- Week 3: Initial synthetic data experiments
+- Week 4: Performance benchmarking and optimization
+
+*Deliverable*: Baseline results, evaluation framework, initial performance metrics
+
+**Milestone 1**: Complete data generation pipeline with baseline comparisons established
+
+### Phase 2: Model Development (Months 3-6)
+
+**Month 3-4: Core Model Implementation**
+- Week 1-2: U-Net adaptation for semiconductor patterns
+- Week 3-4: RCAN implementation with channel attention
+- Week 5-6: ESRGAN for perceptual quality enhancement
+- Week 7-8: Initial training runs and performance evaluation
+
+*Deliverable*: Three functional SR models with preliminary benchmarks
+
+**Month 5-6: Advanced Architectures & Physics Integration**
+- Week 1-2: SwinIR transformer implementation
+- Week 3-4: HAT and Real-ESRGAN deployment
+- Week 5-6: Physics-informed loss function integration
+- Week 7-8: Hybrid physics-DL model development
+
+*Deliverable*: Complete model suite (6+ architectures) with physics constraints
+
+**Milestone 2**: All models implemented with physics-informed enhancements
+
+### Phase 3: Training & Validation (Months 7-10)
+
+**Month 7-8: Intensive Training & Benchmarking**
+- Week 1-2: Hyperparameter optimization (grid search, Bayesian optimization)
+- Week 3-4: Multi-scale training (2×, 4×, 8× super-resolution)
+- Week 5-6: Comprehensive synthetic benchmarking
+- Week 7-8: Ablation studies and statistical analysis
+
+*Deliverable*: Optimized models achieving >3dB PSNR improvement
+
+**Month 9-10: Real-World Validation**
+- Week 1: Cleanroom training and access setup
+- Week 2-3: Optical microscopy data acquisition (100+ images)
+- Week 4-5: SEM ground truth imaging and registration
+- Week 6-7: Real data validation experiments
+- Week 8: Performance analysis and gap assessment
+
+*Deliverable*: 50-100 matched optical-SEM pairs with validation results
+
+**Milestone 3**: Successful demonstration on real semiconductor images
+
+### Phase 4: Analysis & Synthesis (Months 11-13)
+
+**Month 11: Comprehensive Analysis & Tool Development**
+- Week 1: Failure mode analysis and hallucination detection
+- Week 2: Uncertainty quantification implementation
+- Week 3: Interactive visualization tool development
+- Week 4: Deployment framework and documentation
+
+*Deliverable*: Complete analysis toolkit and deployment guide
+
+**Month 12: Thesis Writing & Paper Preparation**
+- Week 1: Results and analysis chapters
+- Week 2: Methodology and implementation chapters
+- Week 3: Introduction, conclusion, and abstract
+- Week 4: Complete draft review and revision
+
+*Deliverable*: Complete thesis draft, 2 journal papers submitted
+
+**Month 13: Defense & Finalization**
+- Week 1: Thesis committee review and feedback incorporation
+- Week 2: Defense presentation preparation and practice
+- Week 3: Thesis defense
+- Week 4: Final revisions, submission, and open-source release
+
+*Deliverable*: Defended thesis, GitHub repository public release
+
+**Milestone 4**: Successful thesis defense and degree completion
+
+## 5.3 Critical Path Analysis
+
+### Critical Path Activities (Zero Float)
+1. **Synthetic data pipeline** (Month 1) - Foundation for all training
+2. **Core model implementation** (Months 3-4) - Essential architectures
+3. **Physics integration** (Months 5-6) - Key innovation
+4. **Model training** (Month 7) - Performance optimization
+5. **Real data acquisition** (Month 9) - Validation requirement
+6. **Thesis writing** (Month 12) - Graduation requirement
+
+### Parallel Track Opportunities
+- **Track A**: Data generation can continue while implementing baselines
+- **Track B**: Multiple models can be trained simultaneously with multi-GPU setup
+- **Track C**: Paper writing can begin during validation phase
+
+### Time Compression Strategies
+1. **Leverage foundational year**: Skip literature review, use established frameworks
+2. **Parallel processing**: Train multiple models simultaneously
+3. **Automation**: Scripted experiments, automated hyperparameter search
+4. **Early starts**: Begin thesis writing during validation phase
+5. **Efficient validation**: Focus on most promising models for real-data testing
+
+## 5.4 Compressed Gantt Chart
+
+```
+Task                |M1|M2|M3|M4|M5|M6|M7|M8|M9|M10|M11|M12|M13|
+--------------------|--|--|--|--|--|--|--|--|--|---|---|---|---|
+Data Pipeline       |██|██| | | | | | | | |   |   |   |
+Baseline Methods    |  |██|██| | | | | | | |   |   |   |
+Core Models         |  |  |██|██| | | | | | |   |   |   |
+Advanced Models     |  |  |  |  |██|██| | | | |   |   |   |
+Physics Integration |  |  |  |░░|██|██| | | | |   |   |   |
+Training/Optimize   |  |  |  |  |  |░░|██|██| | |   |   |   |
+Synthetic Benchmark |  |  |  |  |  |  |░░|██| | |   |   |   |
+Real Data Acquire   |  |  |  |  |  |  |  |  |██|██ |   |   |   |
+Real Validation     |  |  |  |  |  |  |  |  |░░|██ |   |   |   |
+Analysis & Tools    |  |  |  |  |  |  |  |  |  |░░ |██ |   |   |
+Paper Writing       |  |  |  |  |  |  |  |░░|░░|░░ |░░ |██ |   |
+Thesis Writing      |  |  |  |  |  |  |  |  |  |   |░░ |██ |██ |
+Defense Prep        |  |  |  |  |  |  |  |  |  |   |   |   |██ |
+
+Legend: ██ Primary Focus | ░░ Secondary/Parallel Activity
+```
+
+## 5.5 Risk Mitigation
+
+### Schedule Risks and Mitigation
+
+| Risk | Impact | Mitigation Strategy |
+|------|--------|-------------------|
+| Data generation delays | High | Start immediately, use cloud resources for parallel processing |
+| Training time overrun | High | Pre-allocate GPU resources, use multiple GPUs, implement early stopping |
+| Real data access delays | Critical | Secure cleanroom slots in advance, have backup data sources |
+| Model convergence issues | Medium | Use pre-trained weights, implement progressive training |
+| Thesis writing time crunch | High | Start writing early, maintain documentation throughout |
+
+### Contingency Plans
+
+**If Behind Schedule by Month 8**:
+- Reduce model variants (focus on top 3 performers)
+- Limit real validation to most critical patterns
+- Streamline thesis (combine some chapters)
+
+**If Ahead of Schedule**:
+- Add ablation studies
+- Expand real-world validation
+- Submit additional conference papers
+- Develop production deployment prototype
+
+
+## 5.7 Resource Allocation
+
+### Computational Resources
+- **Months 1-2**: 1 GPU for data generation and baselines
+- **Months 3-6**: 4 GPUs for parallel model development
+- **Months 7-8**: 8 GPUs (cloud burst) for intensive training
+- **Months 9-10**: 2 GPUs for validation experiments
+- **Months 11-13**: 1 GPU for final experiments
+
+
 
 
 ## 6. Expected Outcomes and Deliverables
 
 
-    [To add]
+### 6.1 Primary Deliverables
+
+### 6.1.0 Monthly Deliverables and KPIs
+
+| Month | Key Deliverable | Success Metrics |
+|-------|----------------|-----------------|
+| 1 | Synthetic data pipeline | 5,000+ image pairs generated |
+| 2 | Baseline implementation | <30dB PSNR baseline established |
+| 3 | U-Net, RCAN models | Models converging, >31dB PSNR |
+| 4 | ESRGAN implementation | Initial results documented |
+| 5 | SwinIR, HAT models | All architectures functional |
+| 6 | Physics integration | Physics loss reducing artifacts by 20% |
+| 7 | Trained models | >3dB improvement over baseline |
+| 8 | Benchmarking complete | Statistical significance p<0.01 |
+| 9 | Real data acquired | 50+ optical-SEM pairs |
+| 10 | Validation complete | Real-world performance >85% of synthetic |
+| 11 | Analysis tools | Deployment framework documented |
+| 12 | Thesis draft | Complete draft for review |
+| 13 | Defense | Successful defense and submission |
+
+
+#### 6.1.1 Comprehensive Benchmarking Study
+
+**Scope**: Systematic evaluation of 6+ super-resolution methods on semiconductor-specific tasks
+
+**Content**:
+- Quantitative comparison across architectures (U-Net, RCAN, ESRGAN, SwinIR, Real-ESRGAN, HAT)
+- Performance stratification by pattern type (gratings, contacts, logic cells, defects)
+- Scaling analysis (2×, 4×, 8× super-resolution factors)
+- Task-specific evaluation (CD measurement, defect detection, overlay)
+- Computational requirements (FLOPs, memory, inference time)
+
+**Impact**: First rigorous benchmark for semiconductor SR, establishing performance baselines and guiding algorithm selection for specific applications
+
+#### 6.1.2 Open-Source Software Package
+
+**Repository Structure**:
+```
+semicon-super-resolution/
+├── data_generation/
+│   ├── tcad_interface.py
+│   ├── optical_simulation.py
+│   └── synthetic_dataset.py
+├── models/
+│   ├── physics_unet.py
+│   ├── optical_swinir.py
+│   ├── ensemble_sr.py
+│   └── pretrained_weights/
+├── evaluation/
+│   ├── metrics.py
+│   ├── hallucination_detection.py
+│   └── benchmarks.py
+├── deployment/
+│   ├── onnx_export.py
+│   ├── tensorrt_optimization.py
+│   └── production_pipeline.py
+├── visualization/
+│   ├── interactive_comparison.py
+│   └── attention_maps.py
+└── documentation/
+    ├── tutorials/
+    ├── api_reference/
+    └── case_studies/
+```
+
+**Features**:
+- Pre-trained models for immediate use
+- Comprehensive documentation and tutorials
+- Docker containers for reproducible environments
+- Continuous integration testing
+- Performance benchmarks on standard datasets
+
+#### 6.1.3 Physics-Informed Methodologies
+
+**Novel Contributions**:
+1. **PSF-Consistent Loss Functions**: Enforcing forward model consistency
+2. **Uncertainty Quantification Framework**: Bayesian approaches for confidence estimation
+3. **Hallucination Mitigation Strategies**: Multi-modal verification, semantic consistency
+4. **Domain Adaptation Techniques**: Sim-to-real transfer with minimal real data
+
+**Scientific Advancement**: Bridging physics-based and learning-based approaches for more reliable, interpretable models
+
+
+#### 6.2.2 Academic Publications
+
+
+**Target Venues and Papers**:
+
+1. **IEEE Transactions on Semiconductor Manufacturing**
+   - Title: "Physics-Informed Deep Learning for Semiconductor Defect Detection: A Comprehensive Benchmark"
+   - Target: TBA
+
+2. **SPIE Advanced Lithography Conference**
+   - Title: "Bridging the Resolution Gap: Super-Resolution for Sub-20nm Optical Inspection"
+   - Target: TBA
+
+3. **Nature Scientific Reports**
+   - Title: "Uncertainty-Aware Super-Resolution for Nanoscale Metrology Applications"
+   - Target: TBA
+
+4. **IEEE/CVF ICCV or CVPR**
+   - Title: "HAT-Semi: Transformer-Based Super-Resolution for Semiconductor Manufacturing"
+   - Target: TBA
+
+
+
+### 6.3 Success Metrics and Evaluation Criteria
+
+#### 6.3.1 Quantitative Success Metrics
+
+**Technical Performance**:
+- Achieve >3dB PSNR improvement over traditional deconvolution (✓ if PSNR_gain ≥ 3.0)
+- Reduce CD measurement error to <5% (✓ if relative_error < 0.05)
+- Maintain defect detection recall >95% (✓ if TP/(TP+FN) > 0.95)
+- Process images at >10 fps on single GPU (✓ if throughput ≥ 10)
+- Reduce hallucination rate by >40% (✓ if false_features reduced by 0.4)
+
+**Deployment Readiness**:
+- Successfully transfer from synthetic to real data (✓ if real_performance > 0.85 × synthetic_performance)
+- Achieve model compression with <10% accuracy loss (✓ for production deployment)
+- Pass validation on 3+ different inspection systems (✓ for generalization)
+
+#### 6.3.2 Qualitative Success Indicators
+
+**Academic Impact**:
+- Thesis recognition as comprehensive reference in field
+- Collaboration requests from leading research groups
+
+**Industrial Adoption**:
+- Interest from equipment manufacturers (KLA, Applied Materials, ASML)
+- Pilot projects with semiconductor fabs
+- Integration into commercial inspection systems
+- Patent applications based on developed methods
 
 
 ## 7. Budget and Resource Requirements
 
+### 7.1 Budget Summary and Scenarios
 
-    [To add]
+#### 7.1.1 Three Budget Scenarios
+
+**Scenario 1: Minimum Viable Research**
+- Hardware: 2×RTX 4090 workstation
+- Software: Essential TCAD only
+- Data: Limited cleanroom access
+- Cloud: 1000 GPU-hours
+- Dissemination: 2 conferences, 2 papers
+- Contingency: 10%
+- Materials and supplies
+- Validation: Industry collaboration for data
+
+**Scenario 2: Well-Funded Academic**
+- Hardware: Full dual-workstation setup
+- Software: Comprehensive suite
+- Data: Regular cleanroom access
+- Cloud: 2000 GPU-hours
+- Dissemination: Full conference participation
+- Contingency: 15%
+- Validation: SEM rental time
+
+**Scenario 3: Industry-Sponsored**
+- Hardware: Multi-GPU server + workstations
+- Software: Commercial licenses
+- Data: Dedicated cleanroom time
+- Cloud: Unlimited compute
+- Dissemination: Maximum visibility
+- Equipment: Metrology tool access
+- Contingency: 20%
+
+### 7.4 Cost-Benefit Analysis
+
+#### 7.4.1 Cost per Outcome
+
+| Deliverable | Allocated Budget | Success Metric | Cost per Unit |
+|-------------|------------------|----------------|---------------|
+| Trained Models | NA | 6 architectures | NA/model |
+| Synthetic Dataset | NA | 25,000 images | NA/image |
+| Real Validation Data | NA | 100 pairs | NA/pair |
+| Publications | NA| 4 papers | $2,000/paper |
+| Software Package | NA | 1000 users | NA/user |
+| Performance Gain | NA | 3dB improvement | NA/dB |
+
+#### 7.4.2 Return on Investment
+
+**Quantifiable Returns**:
+- Patent potential
+- Industry collaboration
+- Career advancement
+- Open source impact
+
+**Industry Value Creation**:
+- 0.1% yield improvement at 5nm
+- Reduced metrology CAPEX
+- Faster time-to-yield
+- Defect escape reduction
+
+**Break-even Analysis**:
+- Academic: Publication and degree completion
+- Industry: 0.01% yield improvement pays for entire research
+- Society: One prevented chip shortage justifies investment
 
 
-## 9. Collaboration and Partnerships
 
-
-    [To add]
-
-
-## 11. Conclusion and Future Directions
+## 8. Conclusion and Future Directions
 
 
     [To add]
