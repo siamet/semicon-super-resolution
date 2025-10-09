@@ -25,7 +25,7 @@ else:
 setup(
     name="semicon-super-resolution",
     version="0.1.0",
-    author="Your Name",
+    author="siamet",
     author_email="siamet@protonmail.com",
     description="Physics-informed deep learning super-resolution for semiconductor inspection",
     long_description=long_description,

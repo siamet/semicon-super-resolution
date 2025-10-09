@@ -84,14 +84,14 @@
   - [x] `src/` with all subdirectories (data, models, training, evaluation, analysis, utils)
   - [x] `scripts/`, `config/`, `tests/`, `notebooks/`
   - [x] `data/`, `models/`, `results/` (gitignored)
-- [x] Create `requirements.txt` with dependencies (70+ packages)
+- [x] Create `requirements.txt` with dependencies
 - [x] Create `environment.yml` for conda
-- [x] Set up virtual environment and test GPU (RTX 3060 12GB confirmed)
+- [x] Set up virtual environment and test GPU
 - [ ] Initialize experiment tracking (W&B account, project setup)
 - [x] Set up version control (.gitignore, .gitattributes)
 - [x] Create setup.py for editable installation
 - [x] Create LICENSE (MIT)
-- [x] Create comprehensive config files (5 YAML files)
+- [x] Create comprehensive config files
 
 **Week 2: Pattern Generation**
 - [ ] Implement basic pattern generators (`src/data/synthetic/pattern_generator.py`)
