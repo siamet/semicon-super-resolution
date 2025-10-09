@@ -1,0 +1,170 @@
+# Semiconductor Super-Resolution Project .gitattributes
+# Ensures consistent file handling across different platforms
+
+# ============================================================================
+# Auto-detect text files and normalize line endings to LF
+# ============================================================================
+* text=auto eol=lf
+
+# ============================================================================
+# Source Code
+# ============================================================================
+# Python files
+*.py text eol=lf diff=python
+*.pyx text eol=lf diff=python
+*.pyi text eol=lf diff=python
+*.pyw text eol=lf diff=python
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Batch files (Windows)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# ============================================================================
+# Documentation
+# ============================================================================
+*.md text eol=lf diff=markdown
+*.markdown text eol=lf diff=markdown
+*.rst text eol=lf
+*.txt text eol=lf
+*.rtf text eol=lf
+
+# LaTeX (for thesis)
+*.tex text eol=lf diff=tex
+*.bib text eol=lf
+*.cls text eol=lf
+*.sty text eol=lf
+
+# ============================================================================
+# Configuration Files
+# ============================================================================
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+*.conf text eol=lf
+*.config text eol=lf
+
+# Git files
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.gitmodules text eol=lf
+
+# CI/CD
+*.yml text eol=lf
+.dockerignore text eol=lf
+Dockerfile text eol=lf
+Makefile text eol=lf
+
+# ============================================================================
+# Data Files (Binary - Do Not Modify)
+# ============================================================================
+# Images (Binary)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+*.ico binary
+*.svg binary
+
+# TIFF images (Semiconductor data - 16-bit)
+*.tif binary
+*.tiff binary
+
+# Scientific Data Formats (Binary)
+*.npy binary
+*.npz binary
+*.hdf5 binary
+*.h5 binary
+*.mat binary
+*.pkl binary
+*.pickle binary
+
+# Model Files (Binary)
+*.pth binary
+*.pt binary
+*.ckpt binary
+*.safetensors binary
+*.bin binary
+*.onnx binary
+*.pb binary
+*.engine binary
+*.plan binary
+
+# Archives (Binary)
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.7z binary
+*.rar binary
+
+# ============================================================================
+# Documents (Binary)
+# ============================================================================
+*.pdf binary
+*.doc binary
+*.docx binary
+*.ppt binary
+*.pptx binary
+*.xls binary
+*.xlsx binary
+
+# ============================================================================
+# Jupyter Notebooks
+# ============================================================================
+*.ipynb text eol=lf
+
+# Use nbdime for better diff/merge of notebooks (if installed)
+# *.ipynb diff=jupyternotebook
+# *.ipynb merge=jupyternotebook
+
+# ============================================================================
+# Web Files
+# ============================================================================
+*.html text eol=lf diff=html
+*.css text eol=lf diff=css
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+
+# ============================================================================
+# Git LFS (Large File Storage)
+# ============================================================================
+# Uncomment these lines if you want to use Git LFS for large files
+
+# Model checkpoints
+# *.pth filter=lfs diff=lfs merge=lfs -text
+# *.pt filter=lfs diff=lfs merge=lfs -text
+# *.ckpt filter=lfs diff=lfs merge=lfs -text
+# *.safetensors filter=lfs diff=lfs merge=lfs -text
+
+# ONNX models
+# *.onnx filter=lfs diff=lfs merge=lfs -text
+
+# Large data files
+# *.npy filter=lfs diff=lfs merge=lfs -text
+# *.npz filter=lfs diff=lfs merge=lfs -text
+# *.hdf5 filter=lfs diff=lfs merge=lfs -text
+# *.h5 filter=lfs diff=lfs merge=lfs -text
+
+# TIFF images (if needed)
+# *.tif filter=lfs diff=lfs merge=lfs -text
+# *.tiff filter=lfs diff=lfs merge=lfs -text
+
+# ============================================================================
+# Export Ignore (Files not included in exports/archives)
+# ============================================================================
+.gitattributes export-ignore
+.gitignore export-ignore
+.github export-ignore
+tests export-ignore
+*.md export-ignore

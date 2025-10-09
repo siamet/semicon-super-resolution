@@ -33,8 +33,8 @@ This research investigates physics-informed deep learning super-resolution techn
 
 ## 📊 Current Project Status
 
-**Phase**: Planning Complete → Implementation Starting
-**Timeline**: 13-18 month master's thesis project
+**Phase**: Planning Complete → Implementation Starting  
+**Timeline**: 13-18 month master's thesis project   
 **Current Month**: 0 (Pre-implementation)
 
 ### ✅ Completed
@@ -112,7 +112,7 @@ This research investigates physics-informed deep learning super-resolution techn
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/semicon-super-resolution.git
+git clone https://github.com/siamet/semicon-super-resolution.git
 cd semicon-super-resolution
 
 # Create Python environment

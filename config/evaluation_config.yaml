@@ -1,0 +1,299 @@
+# Evaluation Configuration
+# Metrics and benchmarking settings
+
+# ============================================================================
+# General Evaluation Settings
+# ============================================================================
+evaluation:
+  # Device
+  device: 'cuda'
+  batch_size: 1  # Process one image at a time for accurate metrics
+
+  # Test data
+  test_data_dir: 'data/processed/test'
+  num_test_samples: null  # null = use all, or specify number
+
+  # Visualization
+  save_visualizations: true
+  num_visualizations: 20
+  visualization_dir: 'results/figures/qualitative_results'
+
+  # Statistical analysis
+  compute_statistics: true
+  confidence_level: 0.95  # For confidence intervals
+
+# ============================================================================
+# Standard Image Quality Metrics
+# ============================================================================
+metrics:
+  # Peak Signal-to-Noise Ratio
+  psnr:
+    enabled: true
+    data_range: 1.0  # Assuming normalized images [0, 1]
+    reduction: 'mean'  # 'mean' or 'sum'
+
+  # Structural Similarity Index
+  ssim:
+    enabled: true
+    data_range: 1.0
+    window_size: 11
+    gaussian_weights: true
+    k1: 0.01
+    k2: 0.03
+
+  # Multi-Scale SSIM
+  ms_ssim:
+    enabled: true
+    data_range: 1.0
+    weights: [0.0448, 0.2856, 0.3001, 0.2363, 0.1333]
+
+  # Learned Perceptual Image Patch Similarity
+  lpips:
+    enabled: true
+    net: 'alex'  # 'alex', 'vgg', or 'squeeze'
+    spatial: false  # Return spatial map
+
+  # Visual Information Fidelity
+  vif:
+    enabled: false
+    sigma_nsq: 2.0
+
+# ============================================================================
+# Semiconductor-Specific Metrics
+# ============================================================================
+semiconductor_metrics:
+  # Critical Dimension (CD) Error
+  cd_error:
+    enabled: true
+    edge_threshold: 0.5  # For edge detection
+    measurement_method: 'canny'  # 'canny', 'sobel', 'moments'
+    pixel_to_nm: 8.0  # Conversion factor
+
+    # CD measurement types
+    measure_linewidth: true
+    measure_spacing: true
+    measure_contact_diameter: true
+
+  # Edge Placement Error (EPE)
+  epe:
+    enabled: true
+    contour_method: 'opencv'  # 'opencv' or 'skimage'
+    registration_method: 'rigid'  # 'rigid', 'affine', 'elastic'
+    max_distance_nm: 50.0  # Maximum EPE to consider valid
+
+  # Line Width Roughness (LWR) / Line Edge Roughness (LER)
+  roughness:
+    enabled: true
+    measure_lwr: true
+    measure_ler: true
+    correlation_length_nm: 20.0
+
+  # Defect Detection Performance
+  defect_detection:
+    enabled: true
+    detection_method: 'anomaly'  # 'anomaly', 'threshold', 'learned'
+    threshold: 0.3  # Anomaly threshold
+
+    # Metrics
+    compute_precision: true
+    compute_recall: true
+    compute_f1: true
+    compute_roc_auc: true
+
+    # Defect types to evaluate
+    defect_types: ['particles', 'scratches', 'cd_variation', 'missing_pattern']
+
+  # Pattern Fidelity
+  pattern_fidelity:
+    enabled: true
+    fft_based: true  # Frequency domain analysis
+    period_detection: true  # For periodic patterns
+
+# ============================================================================
+# Frequency Domain Analysis
+# ============================================================================
+frequency_analysis:
+  enabled: true
+
+  # Power Spectral Density
+  psd:
+    compute: true
+    log_scale: true
+
+  # Cutoff Frequency Analysis
+  cutoff_frequency:
+    compute: true
+    theoretical_cutoff_nm: 124  # 0.61 * 248nm / 0.95
+
+  # Frequency Error
+  frequency_error:
+    compute: true
+    bands: [0.1, 0.3, 0.5, 0.7, 0.9]  # Normalized frequency bands
+
+# ============================================================================
+# Hallucination Detection
+# ============================================================================
+hallucination:
+  enabled: true
+
+  # PSF consistency check
+  psf_consistency:
+    enabled: true
+    threshold: 0.3
+
+  # Ensemble disagreement (if using ensemble)
+  ensemble:
+    enabled: false
+    num_models: 3
+    disagreement_threshold: 0.2
+
+  # Frequency analysis
+  frequency_check:
+    enabled: true
+    high_freq_threshold: 0.5
+
+  # Metrics
+  compute_hallucination_ratio: true
+  hallucination_map_output: true
+
+# ============================================================================
+# Uncertainty Quantification
+# ============================================================================
+uncertainty:
+  enabled: true
+
+  # MC Dropout
+  mc_dropout:
+    enabled: false
+    num_samples: 10
+    dropout_rate: 0.1
+
+  # Ensemble-based
+  ensemble:
+    enabled: false
+    num_models: 3
+
+  # Built-in uncertainty head
+  uncertainty_head:
+    enabled: true  # If model has uncertainty output
+
+  # Metrics
+  compute_calibration: true
+  reliability_diagram: true
+
+# ============================================================================
+# Comparative Benchmarking
+# ============================================================================
+benchmark:
+  # Models to compare
+  models:
+    - 'bicubic'
+    - 'richardson_lucy'
+    - 'wiener'
+    - 'unet'
+    - 'rcan'
+    - 'esrgan'
+    - 'swinir'
+    - 'hat'
+
+  # Pattern-specific evaluation
+  evaluate_by_pattern:
+    enabled: true
+    patterns: ['gratings', 'contacts', 'logic_cells', 'defects']
+
+  # Scale-specific evaluation
+  evaluate_by_scale:
+    enabled: true
+    scales: [2, 4, 8]
+
+  # Statistical significance
+  statistical_tests:
+    enabled: true
+    test_type: 'wilcoxon'  # 'wilcoxon', 't-test', 'friedman'
+    alpha: 0.05  # Significance level
+
+# ============================================================================
+# Inference Performance
+# ============================================================================
+performance:
+  # Speed benchmarking
+  measure_inference_time: true
+  num_warmup_runs: 10
+  num_timed_runs: 100
+
+  # Memory profiling
+  measure_memory: true
+  log_gpu_memory: true
+
+  # Model complexity
+  compute_flops: true
+  compute_params: true
+
+  # FPS calculation
+  compute_fps: true
+  target_fps: 10  # Minimum acceptable FPS
+
+# ============================================================================
+# Output Configuration
+# ============================================================================
+output:
+  # Results format
+  save_format: 'json'  # 'json', 'csv', 'yaml'
+  results_dir: 'results/benchmarks'
+
+  # Detailed outputs
+  save_metrics_per_image: true
+  save_aggregate_statistics: true
+  save_comparison_tables: true
+
+  # Figures
+  generate_plots: true
+  plot_format: 'png'  # 'png', 'pdf', 'svg'
+  plot_dpi: 300
+
+  # Report generation
+  generate_report: true
+  report_format: 'markdown'  # 'markdown', 'html', 'pdf'
+
+# ============================================================================
+# Validation During Training
+# ============================================================================
+validation:
+  # Quick validation metrics (during training)
+  quick_metrics: ['psnr', 'ssim']
+
+  # Full evaluation frequency
+  full_eval_frequency: 10  # Every N validation checks
+
+  # Subset evaluation
+  val_subset_size: 100  # Use subset for faster validation
+
+# ============================================================================
+# Real-World Validation
+# ============================================================================
+real_world:
+  # Real data directory
+  real_data_dir: 'data/raw/real'
+
+  # Registration settings
+  registration:
+    method: 'elastic'  # 'rigid', 'affine', 'elastic'
+    pyramid_levels: 3
+    iterations: 100
+
+  # Sim-to-real transfer analysis
+  domain_gap_analysis:
+    enabled: true
+    compare_distributions: true
+    compute_adaptation_metrics: true
+
+# ============================================================================
+# Paths
+# ============================================================================
+paths:
+  checkpoint_dir: 'models/final'
+  test_data_dir: 'data/processed/test'
+  real_data_dir: 'data/raw/real'
+  results_dir: 'results/benchmarks'
+  figures_dir: 'results/figures'
+  reports_dir: 'results/reports'

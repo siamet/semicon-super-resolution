@@ -1,0 +1,296 @@
+# Semiconductor Super-Resolution Project .gitignore
+
+# ============================================================================
+# Python
+# ============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Flask / Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Scrapy
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ============================================================================
+# Deep Learning & Data Science
+# ============================================================================
+# Data directories (large files)
+/data/
+!/data/.gitkeep
+
+# Model checkpoints and weights
+/models/
+!/models/.gitkeep
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.bin
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Results and experiments
+/results/
+!/results/.gitkeep
+/runs/
+/outputs/
+/wandb/
+
+# ONNX models
+*.onnx
+*.pb
+
+# TensorRT engines
+*.engine
+*.plan
+
+# ============================================================================
+# Experiment Tracking
+# ============================================================================
+# Weights & Biases
+wandb/
+
+# TensorBoard
+runs/
+tensorboard/
+lightning_logs/
+
+# MLflow
+mlruns/
+mlartifacts/
+
+# Optuna
+optuna_study.db
+
+# ============================================================================
+# IDEs and Editors
+# ============================================================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.*.swp
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# ============================================================================
+# Operating System Files
+# ============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+
+# ============================================================================
+# Project-Specific
+# ============================================================================
+# Temporary processing files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Large data files (even if tracked, ignore new ones)
+*.tif
+*.tiff
+*.npy
+*.npz
+*.hdf
+*.mat
+
+# Config files with secrets
+*secret*
+*credentials*
+.env.local
+.env.*.local
+
+# Generated documentation
+docs/api_reference/_build/
+docs/api_reference/source/_autosummary/
+
+# Profiling outputs
+*.prof
+*.lprof
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Compressed archives (data backups)
+*.zip
+*.tar.gz
+*.tar.bz2
+*.7z
+*.rar
+
+# ============================================================================
+# Research-Specific
+# ============================================================================
+# Thesis drafts (track final versions only)
+thesis/drafts/
+*.pdf~
+
+# Weekly progress reports (track manually)
+# Uncomment if you want to track them:
+# !results/reports/weekly_progress/*.md
+
+# Paper submissions (track manually)
+papers/submissions/
+
+# Presentation files (large)
+*.pptx
+*.key
+
+# ============================================================================
+# Git LFS (Large File Storage) - Track these with LFS
+# ============================================================================
+# Uncomment if using Git LFS for models:
+# *.pth filter=lfs diff=lfs merge=lfs -text
+# *.onnx filter=lfs diff=lfs merge=lfs -text
+
+# ============================================================================
+# Keep empty directories
+# ============================================================================
+!.gitkeep

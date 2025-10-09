@@ -1,0 +1,246 @@
+# Training Configuration
+# Hyperparameters for model training
+
+# ============================================================================
+# General Training Settings
+# ============================================================================
+training:
+  # Hardware
+  device: 'cuda'  # 'cuda' or 'cpu'
+  num_gpus: 1  # Number of GPUs to use
+  use_amp: true  # Automatic Mixed Precision (FP16)
+  compile_model: false  # Use torch.compile() for PyTorch 2.0+
+
+  # Batch sizes
+  batch_size: 16  # Per GPU
+  effective_batch_size: 64  # Using gradient accumulation if needed
+  gradient_accumulation_steps: 4  # effective_batch / batch_size
+
+  # Training duration
+  total_iterations: 450000
+  warmup_iterations: 5000
+
+  # Epochs (alternative to iterations)
+  max_epochs: null  # Set to number if using epoch-based training
+
+  # Checkpointing
+  save_frequency: 10000  # Save checkpoint every N iterations
+  keep_last_n_checkpoints: 5
+  save_best_only: false
+
+  # Validation
+  val_frequency: 2000  # Validate every N iterations
+  val_on_start: true
+
+  # Early stopping
+  early_stopping:
+    enabled: false
+    patience: 20  # Validation checks
+    min_delta: 0.001  # Minimum improvement in PSNR
+
+# ============================================================================
+# Optimizer Configuration
+# ============================================================================
+optimizer:
+  type: 'adam'  # 'adam', 'adamw', 'sgd', 'rmsprop'
+
+  # Adam/AdamW parameters
+  lr: 2.0e-4  # Learning rate
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  weight_decay: 0.0  # L2 regularization (use 0.01 for AdamW)
+
+  # SGD parameters (if using SGD)
+  momentum: 0.9
+  nesterov: true
+
+  # Gradient clipping
+  grad_clip:
+    enabled: true
+    max_norm: 1.0  # Clip gradients to this norm
+
+# ============================================================================
+# Learning Rate Scheduler
+# ============================================================================
+scheduler:
+  type: 'multistep'  # 'step', 'multistep', 'cosine', 'plateau', 'cyclic'
+
+  # MultiStep LR
+  multistep:
+    milestones: [150000, 300000, 400000]
+    gamma: 0.5  # Multiply LR by this at each milestone
+
+  # Step LR
+  step:
+    step_size: 100000
+    gamma: 0.5
+
+  # Cosine Annealing
+  cosine:
+    T_max: 450000
+    eta_min: 1.0e-7
+
+  # ReduceLROnPlateau
+  plateau:
+    mode: 'max'  # 'max' for PSNR, 'min' for loss
+    factor: 0.5
+    patience: 10
+    threshold: 0.001
+
+  # Warmup
+  warmup:
+    enabled: true
+    warmup_iterations: 5000
+    warmup_method: 'linear'  # 'linear' or 'constant'
+
+# ============================================================================
+# Loss Function Configuration
+# ============================================================================
+loss:
+  type: 'physics_informed'  # 'l1', 'l2', 'perceptual', 'physics_informed', 'gan'
+
+  # L1 Loss
+  l1:
+    weight: 1.0
+
+  # L2 (MSE) Loss
+  l2:
+    weight: 0.0
+
+  # Perceptual Loss (VGG features)
+  perceptual:
+    enabled: false
+    weight: 0.1
+    vgg_layer: 'relu5_4'  # VGG layer to use
+    use_input_norm: true
+
+  # Physics-Informed Loss
+  physics_informed:
+    enabled: true
+    lambda_consistency: 1.0  # PSF consistency
+    lambda_frequency: 0.1    # Frequency domain
+    lambda_edge: 0.1         # Edge preservation
+    lambda_physics: 0.01     # Physical constraints
+
+  # GAN Loss
+  gan:
+    enabled: false
+    weight: 0.005
+    type: 'vanilla'  # 'vanilla', 'lsgan', 'wgan-gp'
+    discriminator_weight: 1.0
+
+  # SSIM Loss (optional)
+  ssim:
+    enabled: false
+    weight: 0.1
+    window_size: 11
+
+# ============================================================================
+# Progressive Training Stages
+# ============================================================================
+progressive_training:
+  enabled: true
+
+  # Stage 1: Pre-training on natural images
+  stage1:
+    enabled: false  # Set true if using ImageNet pre-training
+    iterations: 50000
+    dataset: 'div2k'  # 'div2k', 'flickr2k'
+    lr: 2.0e-4
+
+  # Stage 2: Domain adaptation
+  stage2:
+    enabled: true
+    iterations: 100000
+    mix_natural: 0.3  # 30% natural images, 70% synthetic
+    lr: 1.0e-4
+
+  # Stage 3: Task-specific fine-tuning
+  stage3:
+    enabled: true
+    iterations: 200000
+    dataset: 'synthetic_semiconductor'
+    lr: 5.0e-5
+
+  # Stage 4: Defect-aware training
+  stage4:
+    enabled: true
+    iterations: 100000
+    defect_enrichment: 0.5  # 50% samples with defects
+    lr: 2.0e-5
+
+# ============================================================================
+# Data Loading
+# ============================================================================
+data_loader:
+  num_workers: 4  # DataLoader workers
+  pin_memory: true
+  persistent_workers: true
+  prefetch_factor: 2
+
+  # Data augmentation (see data_config.yaml for details)
+  use_augmentation: true
+
+# ============================================================================
+# Logging and Monitoring
+# ============================================================================
+logging:
+  # Console logging
+  log_frequency: 100  # Log every N iterations
+  verbose: true
+
+  # TensorBoard
+  tensorboard:
+    enabled: true
+    log_dir: 'results/logs/tensorboard'
+
+  # Weights & Biases
+  wandb:
+    enabled: true
+    project: 'semicon-super-resolution'
+    entity: null  # Your W&B username/team
+    name: null  # Run name (auto-generated if null)
+    tags: ['research', 'semiconductor', 'super-resolution']
+    notes: 'Physics-informed SR for semiconductor inspection'
+
+  # Visualization
+  visualize_frequency: 5000  # Generate visual comparisons every N iterations
+  num_visualizations: 8  # Number of samples to visualize
+
+# ============================================================================
+# Reproducibility
+# ============================================================================
+reproducibility:
+  seed: 42
+  deterministic: false  # Set true for full reproducibility (slower)
+  benchmark: true  # CuDNN benchmark mode (faster but not deterministic)
+
+# ============================================================================
+# Distributed Training (Multi-GPU)
+# ============================================================================
+distributed:
+  enabled: false
+  backend: 'nccl'  # 'nccl' for GPU, 'gloo' for CPU
+  init_method: 'env://'
+  world_size: null  # Auto-detect
+  rank: 0
+  local_rank: 0
+
+# ============================================================================
+# Resume Training
+# ============================================================================
+resume:
+  enabled: false
+  checkpoint_path: null  # Path to checkpoint
+  resume_optimizer: true
+  resume_scheduler: true
+  resume_iteration: true
+
+# ============================================================================
+# Paths
+# ============================================================================
+paths:
+  data_dir: 'data/processed'
+  checkpoint_dir: 'models/checkpoints'
+  log_dir: 'results/logs/training'
+  visualization_dir: 'results/figures/training_curves'

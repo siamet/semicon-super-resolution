@@ -1,0 +1,196 @@
+# Model Architecture Configuration
+# Hyperparameters for all SR models
+
+# ============================================================================
+# U-Net
+# ============================================================================
+unet:
+  name: 'PhysicsUNet'
+  in_channels: 1  # Grayscale semiconductor images
+  out_channels: 1
+  base_channels: 64
+  depth: 4  # Number of downsampling stages
+  scale_factor: 4
+
+  # Physics branch
+  physics_aware: true
+  psf_kernel_size: 33
+
+  # Architecture details
+  use_batch_norm: false  # Better for SR
+  activation: 'relu'
+  upsampling: 'pixel_shuffle'  # or 'transpose_conv', 'bilinear'
+
+# ============================================================================
+# RCAN (Residual Channel Attention Network)
+# ============================================================================
+rcan:
+  name: 'RCAN'
+  in_channels: 1
+  out_channels: 1
+  n_resgroups: 10  # Number of residual groups
+  n_resblocks: 20  # Blocks per group
+  n_feats: 64  # Number of feature channels
+  reduction: 16  # Channel reduction ratio for attention
+  scale_factor: 4
+  rgb_range: 1.0  # Normalized to [0, 1]
+
+  # Residual scaling
+  res_scale: 1.0
+
+# ============================================================================
+# ESRGAN (Enhanced Super-Resolution GAN)
+# ============================================================================
+esrgan:
+  name: 'ESRGAN'
+  in_channels: 1
+  out_channels: 1
+  n_feats: 64
+  n_blocks: 23  # Number of RRDB blocks
+  gc: 32  # Growth channel (for dense blocks)
+  scale_factor: 4
+
+  # Generator
+  generator:
+    use_pixel_shuffle: true
+    activation: 'leakyrelu'
+    negative_slope: 0.2
+
+  # Discriminator (optional for GAN training)
+  discriminator:
+    use_discriminator: false  # Set true for adversarial training
+    n_layers: 3
+    norm_type: 'batch'  # 'batch', 'instance', or 'none'
+
+  # GAN training
+  gan_training:
+    start_iter: 50000  # Start GAN training after this many iterations
+    gan_weight: 0.005  # Weight for adversarial loss
+
+# ============================================================================
+# Real-ESRGAN
+# ============================================================================
+realesrgan:
+  name: 'RealESRGAN'
+  in_channels: 1
+  out_channels: 1
+  n_feats: 64
+  n_blocks: 23
+  scale_factor: 4
+
+  # High-order degradation modeling
+  degradation:
+    blur_kernel_size: 21
+    kernel_list: ['iso', 'aniso']
+    kernel_prob: [0.5, 0.5]
+    blur_sigma: [0.2, 3.0]
+    downsample_range: [0.8, 8.0]
+    noise_range: [0, 20]
+    jpeg_range: [30, 95]
+
+# ============================================================================
+# SwinIR (Swin Transformer Image Restoration)
+# ============================================================================
+swinir:
+  name: 'SwinIR'
+  in_channels: 1
+  out_channels: 1
+  img_size: 128  # Training patch size
+  patch_size: 1
+  embed_dim: 180  # 60 for small, 180 for medium
+  depths: [6, 6, 6, 6]  # Number of blocks in each stage
+  num_heads: [6, 6, 6, 6]  # Attention heads per stage
+  window_size: 8
+  mlp_ratio: 2.0
+  scale_factor: 4
+
+  # Attention
+  qkv_bias: true
+  qk_scale: null
+  drop_rate: 0.0
+  attn_drop_rate: 0.0
+  drop_path_rate: 0.1
+
+  # Upsampling
+  upsampler: 'pixelshuffle'  # 'pixelshuffle', 'pixelshuffledirect', 'nearest+conv'
+
+  # Model size variants
+  # small: embed_dim=60, depths=[6,6,6,6]
+  # medium: embed_dim=180, depths=[6,6,6,6]
+  # large: embed_dim=240, depths=[6,6,6,6,6,6]
+
+# ============================================================================
+# HAT (Hybrid Attention Transformer)
+# ============================================================================
+hat:
+  name: 'HAT'
+  in_channels: 1
+  out_channels: 1
+  img_size: 128
+  patch_size: 1
+  embed_dim: 180
+  depths: [6, 6, 6, 6, 6, 6]  # Deeper than SwinIR
+  num_heads: [6, 6, 6, 6, 6, 6]
+  window_size: 16  # Larger window
+  overlap_ratio: 0.5  # Overlapping cross-attention
+  mlp_ratio: 2.0
+  scale_factor: 4
+
+  # Channel attention
+  compress_ratio: 3
+  squeeze_factor: 30
+
+  # Same-task pre-training
+  pretrain_img_size: 128
+  pretrain_scale: 2  # Pre-train on 2x, then fine-tune for 4x
+
+# ============================================================================
+# Traditional Baselines
+# ============================================================================
+traditional:
+  # Bicubic interpolation
+  bicubic:
+    name: 'Bicubic'
+    scale_factor: 4
+
+  # Richardson-Lucy Deconvolution
+  richardson_lucy:
+    name: 'RichardsonLucy'
+    iterations: 50
+    psf_kernel_size: 33
+
+  # Wiener Filter
+  wiener:
+    name: 'WienerFilter'
+    snr: 100  # Signal-to-noise ratio estimate
+    psf_kernel_size: 33
+
+# ============================================================================
+# Physics-Informed Components
+# ============================================================================
+physics:
+  # PSF modeling
+  psf:
+    wavelength_nm: 248
+    NA: 0.95
+    pixel_size_nm: 8.0
+    kernel_size: 33
+
+  # Physics-aware loss components (weights)
+  loss_weights:
+    l1: 1.0
+    psf_consistency: 1.0
+    frequency: 0.1
+    edge: 0.1
+    physics_constraint: 0.01
+
+# ============================================================================
+# Model Selection
+# ============================================================================
+default_model: 'swinir'  # Default model to use
+
+# Pre-trained weights (if using transfer learning)
+pretrained:
+  use_pretrained: false
+  imagenet_weights: true  # For transformer models
+  custom_weights_path: null

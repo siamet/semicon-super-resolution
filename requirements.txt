@@ -1,0 +1,101 @@
+# Physics-Informed Deep Learning Super-Resolution for Semiconductor Inspection
+# Python 3.10+ required
+
+# Deep Learning Framework
+torch>=2.1.0
+torchvision>=0.16.0
+torchaudio>=2.1.0
+
+# Vision Transformers and Pre-trained Models
+timm>=0.9.0
+
+# Scientific Computing
+numpy>=1.24.0
+scipy>=1.11.0
+scikit-image>=0.22.0
+scikit-learn>=1.3.0
+
+# Image Processing
+opencv-python>=4.8.0
+Pillow>=10.0.0
+imageio>=2.31.0
+tifffile>=2023.9.0  # For 16-bit TIFF semiconductor images
+
+# Data Handling
+pandas>=2.1.0
+h5py>=3.9.0
+pyarrow>=13.0.0
+
+# Visualization
+matplotlib>=3.8.0
+seaborn>=0.13.0
+plotly>=5.17.0
+
+# Experiment Tracking
+wandb>=0.15.0
+tensorboard>=2.14.0
+tensorboardX>=2.6.0
+
+# Metrics and Evaluation
+lpips>=0.1.4  # Learned Perceptual Image Patch Similarity
+pytorch-fid>=0.3.0  # Fréchet Inception Distance
+
+# Optimization and Deployment
+onnx>=1.15.0
+onnxruntime-gpu>=1.16.0  # GPU-accelerated ONNX inference
+# tensorrt>=8.6.0  # Uncomment if TensorRT is available
+
+# Configuration Management
+pyyaml>=6.0.1
+hydra-core>=1.3.0  # Advanced config management
+omegaconf>=2.3.0
+
+# Progress Bars and Utilities
+tqdm>=4.66.0
+rich>=13.5.0  # Beautiful terminal output
+colorama>=0.4.6
+
+# Logging
+loguru>=0.7.0
+
+# Development Tools
+jupyter>=1.0.0
+ipython>=8.15.0
+ipywidgets>=8.1.0
+notebook>=7.0.0
+
+# Code Quality
+black>=23.9.0  # Code formatter
+flake8>=6.1.0  # Linter
+mypy>=1.5.0  # Type checker
+isort>=5.12.0  # Import sorter
+pylint>=2.17.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-xdist>=3.3.0  # Parallel testing
+pytest-timeout>=2.1.0
+
+# Documentation
+sphinx>=7.2.0
+sphinx-rtd-theme>=1.3.0
+sphinx-autodoc-typehints>=1.24.0
+
+# Reproducibility
+python-dotenv>=1.0.0  # Environment variable management
+
+# Numerical Stability
+einops>=0.7.0  # Einstein operations for tensor manipulation
+
+# Optional: TCAD/Optical Simulation Interfaces
+# pymeep>=1.26.0  # FDTD electromagnetic simulation
+# gdspy>=1.6.0  # GDSII layout files
+
+# Optional: Advanced Optimization
+# optuna>=3.3.0  # Hyperparameter optimization
+# ray[tune]>=2.7.0  # Distributed hyperparameter tuning
+
+# GPU Monitoring
+gpustat>=1.1.0
+pynvml>=11.5.0  # NVIDIA GPU monitoring

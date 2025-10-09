@@ -1,0 +1,202 @@
+# Path Configuration
+# Centralized path management for the project
+
+# ============================================================================
+# Project Root
+# ============================================================================
+project_root: '.'  # Will be auto-detected at runtime
+
+# ============================================================================
+# Data Directories
+# ============================================================================
+data:
+  # Root data directory
+  root: 'data'
+
+  # Raw data
+  raw:
+    root: 'data/raw'
+    synthetic:
+      root: 'data/raw/synthetic'
+      patterns: 'data/raw/synthetic/patterns'
+      degraded: 'data/raw/synthetic/degraded'
+      metadata: 'data/raw/synthetic/metadata'
+    real:
+      root: 'data/raw/real'
+      optical: 'data/raw/real/optical'
+      sem: 'data/raw/real/sem'
+      metadata: 'data/raw/real/metadata'
+
+  # Processed data
+  processed:
+    root: 'data/processed'
+    train: 'data/processed/train'
+    val: 'data/processed/val'
+    test: 'data/processed/test'
+    external: 'data/processed/external'
+
+  # Interim data
+  interim:
+    root: 'data/interim'
+    statistics: 'data/interim/statistics'
+    quality_control: 'data/interim/quality_control'
+
+# ============================================================================
+# Model Directories
+# ============================================================================
+models:
+  root: 'models'
+  traditional: 'models/traditional'
+  checkpoints: 'models/checkpoints'
+  final: 'models/final'
+  compressed: 'models/compressed'
+
+  # Pre-trained weights
+  pretrained:
+    root: 'models/pretrained'
+    imagenet: 'models/pretrained/imagenet'
+    div2k: 'models/pretrained/div2k'
+
+# ============================================================================
+# Results Directories
+# ============================================================================
+results:
+  root: 'results'
+
+  # Benchmarks
+  benchmarks:
+    root: 'results/benchmarks'
+    synthetic: 'results/benchmarks/synthetic_results.json'
+    real: 'results/benchmarks/real_results.json'
+    comparison: 'results/benchmarks/comparison_tables.csv'
+
+  # Figures
+  figures:
+    root: 'results/figures'
+    training_curves: 'results/figures/training_curves'
+    qualitative_results: 'results/figures/qualitative_results'
+    statistical_analysis: 'results/figures/statistical_analysis'
+    publication: 'results/figures/publication'
+
+  # Logs
+  logs:
+    root: 'results/logs'
+    training: 'results/logs/training'
+    evaluation: 'results/logs/evaluation'
+    hyperparameter_search: 'results/logs/hyperparameter_search'
+    tensorboard: 'results/logs/tensorboard'
+
+  # Reports
+  reports:
+    root: 'results/reports'
+    weekly_progress: 'results/reports/weekly_progress'
+    method_analysis: 'results/reports/method_analysis'
+    final_benchmark: 'results/reports/final_benchmark'
+
+# ============================================================================
+# Configuration Directory
+# ============================================================================
+config:
+  root: 'config'
+  data: 'config/data_config.yaml'
+  model: 'config/model_config.yaml'
+  training: 'config/training_config.yaml'
+  evaluation: 'config/evaluation_config.yaml'
+  paths: 'config/paths.yaml'
+
+# ============================================================================
+# Source Code
+# ============================================================================
+src:
+  root: 'src'
+  data: 'src/data'
+  models: 'src/models'
+  training: 'src/training'
+  evaluation: 'src/evaluation'
+  analysis: 'src/analysis'
+  utils: 'src/utils'
+
+# ============================================================================
+# Scripts
+# ============================================================================
+scripts:
+  root: 'scripts'
+  data_generation: 'scripts/data_generation'
+  training: 'scripts/training'
+  evaluation: 'scripts/evaluation'
+  analysis: 'scripts/analysis'
+  deployment: 'scripts/deployment'
+
+# ============================================================================
+# Notebooks
+# ============================================================================
+notebooks:
+  root: 'notebooks'
+
+# ============================================================================
+# Tests
+# ============================================================================
+tests:
+  root: 'tests'
+  test_data: 'tests/test_data'
+  test_models: 'tests/test_models'
+  test_evaluation: 'tests/test_evaluation'
+  test_utils: 'tests/test_utils'
+
+# ============================================================================
+# Tools
+# ============================================================================
+tools:
+  root: 'tools'
+  data_visualization: 'tools/data_visualization'
+  model_analysis: 'tools/model_analysis'
+  deployment: 'tools/deployment'
+
+# ============================================================================
+# Documentation
+# ============================================================================
+docs:
+  root: 'docs'
+  api_reference: 'docs/api_reference'
+  architecture: 'docs/architecture'
+
+# ============================================================================
+# Thesis
+# ============================================================================
+thesis:
+  root: 'thesis'
+  chapters: 'thesis/chapters'
+  figures: 'thesis/figures'
+  tables: 'thesis/tables'
+  bibliography: 'thesis/bibliography'
+  supplementary: 'thesis/supplementary'
+
+# ============================================================================
+# External Resources (URLs)
+# ============================================================================
+external:
+  # Pre-trained model weights
+  pretrained_models:
+    swinir_imagenet: 'https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/001_classicalSR_DF2K_s64w8_SwinIR-M_x4.pth'
+    rcan_div2k: 'https://github.com/yulunzhang/RCAN/releases/download/v1.0/RCAN_BIX4.pt'
+
+  # Datasets
+  datasets:
+    div2k: 'https://data.vision.ee.ethz.ch/cvl/DIV2K/'
+    flickr2k: 'https://cv.snu.ac.kr/research/EDSR/Flickr2K.tar'
+
+# ============================================================================
+# Cache Directories
+# ============================================================================
+cache:
+  root: '.cache'
+  downloads: '.cache/downloads'
+  preprocessed: '.cache/preprocessed'
+
+# ============================================================================
+# Temporary Directories
+# ============================================================================
+temp:
+  root: 'tmp'
+  processing: 'tmp/processing'
+  experiments: 'tmp/experiments'

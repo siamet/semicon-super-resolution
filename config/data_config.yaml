@@ -1,0 +1,143 @@
+# Data Generation Configuration
+# For synthetic semiconductor pattern generation and degradation
+
+# ============================================================================
+# Synthetic Pattern Generation
+# ============================================================================
+synthetic:
+  # Image properties
+  image_size: 512  # pixels
+  pixel_size_nm: 8.0  # nanometers per pixel (2nm for HR, 8nm for LR with 4x SR)
+
+  # Pattern types and counts
+  patterns:
+    gratings:
+      count: 5000
+      pitch_range: [20, 200]  # nm
+      duty_cycle_range: [0.3, 0.7]
+      orientations: [0, 45, 90, 135]  # degrees
+
+    contacts:
+      count: 5000
+      diameter_range: [20, 100]  # nm
+      shapes: ['circular', 'square']
+      array_types: ['regular', 'staggered']
+
+    logic_cells:
+      count: 5000
+      types: ['SRAM_6T', 'SRAM_8T', 'NAND', 'NOR', 'flipflop']
+      feature_size_range: [20, 50]  # nm
+
+    defects:
+      count: 5000
+      types: ['particles', 'scratches', 'cd_variation', 'missing_pattern']
+      particle_diameter_range: [10, 100]  # nm
+      scratch_width_range: [5, 50]  # nm
+      scratch_length_range: [100, 5000]  # nm
+
+  # Line Edge Roughness (LER)
+  ler:
+    sigma_nm: 2.0  # 3σ LER
+    correlation_length_nm: 20.0
+
+# ============================================================================
+# Optical System Parameters
+# ============================================================================
+optical:
+  # Wavelength options (DUV to visible)
+  wavelengths_nm: [193, 248, 365, 436, 550]
+  default_wavelength_nm: 248  # DUV
+
+  # Numerical Aperture
+  NA_values: [0.50, 0.65, 0.80, 0.95, 1.35]  # 1.35 for immersion
+  default_NA: 0.95
+
+  # Partial Coherence
+  sigma_values: [0.3, 0.5, 0.7]  # Condenser NA / Objective NA
+  default_sigma: 0.5
+
+  # PSF kernel size
+  psf_kernel_size: 33  # pixels (must be odd)
+
+  # Aberrations
+  aberrations:
+    spherical: 0.05  # wavelengths
+    coma: 0.03
+    astigmatism: 0.02
+
+# ============================================================================
+# Degradation Parameters
+# ============================================================================
+degradation:
+  # Super-resolution scales
+  scale_factors: [2, 4, 8]
+  default_scale: 4
+
+  # Noise models
+  noise:
+    # Poisson shot noise
+    shot_noise:
+      snr_db_range: [20, 40]
+      default_snr_db: 30
+
+    # Gaussian readout noise
+    readout_noise:
+      sigma_range: [5, 20]  # electrons
+      default_sigma: 10
+
+    # Fixed pattern noise (PRNU)
+    pattern_noise:
+      prnu_percent: 2.0  # Photo Response Non-Uniformity
+
+  # Downsampling method
+  downsample_method: 'bicubic'  # 'bicubic', 'area', 'lanczos'
+
+# ============================================================================
+# Dataset Organization
+# ============================================================================
+dataset:
+  # Data splits
+  train_ratio: 0.80  # 20,000 samples
+  val_ratio: 0.12    # 3,000 samples
+  test_ratio: 0.08   # 2,000 samples
+
+  # Patch extraction (for training)
+  patch_size_lr: 128  # Low-resolution patch size
+  patches_per_image: 1  # Can extract multiple patches per image
+
+  # Output format
+  image_format: 'tiff'  # 'tiff' for 16-bit, 'png' for 8-bit
+  bit_depth: 16
+
+  # Metadata
+  save_metadata: true
+  metadata_format: 'json'  # 'json' or 'yaml'
+
+# ============================================================================
+# Data Augmentation (for training)
+# ============================================================================
+augmentation:
+  # Geometric transforms
+  horizontal_flip: true
+  vertical_flip: true
+  rotations: [0, 90, 180, 270]  # degrees
+
+  # Intensity transforms
+  brightness_range: [0.9, 1.1]
+  contrast_range: [0.9, 1.1]
+
+  # Random crops
+  random_crop: true
+  crop_size: 128
+
+# ============================================================================
+# Paths
+# ============================================================================
+paths:
+  raw_data: 'data/raw/synthetic'
+  processed_data: 'data/processed'
+  metadata: 'data/raw/synthetic/metadata'
+
+  # Output subdirectories
+  patterns: 'patterns'
+  degraded: 'degraded'
