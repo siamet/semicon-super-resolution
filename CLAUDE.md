@@ -40,6 +40,9 @@ Avoid building functionality on speculation. Implement features only when they a
 - **Follow consistent directory structure** as defined in project architecture
 - **Maintain clear separation of concerns** between layers (UI, business logic, data)
 
+
+### ✅ Task Completion
+- **Mark an action completed in `RAODMAP.md`** immediately after finishing the action.
 ---
 
 ## 🛠️ Technology Stack & Environment
@@ -102,6 +105,13 @@ jupyter notebook notebooks/
 - **Directories**: [e.g., kebab-case, snake_case, consistent with project]
 
 ### Documentation Standards
+
+- **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.
+- **Comment non-obvious code** and ensure everything is understandable to a mid-level developer.
+- When writing complex logic, **add an inline `# Reason:` comment** explaining the why, not just the what.
+- Always use context7 when I need code generation, setup or configuration steps, or library/API documentation. This means you should automatically use the Context7 MCPtools to resolve library id and get library docs without me having to explicitly ask.
+
+
 **[Language-specific documentation format]**
 ```
 // JavaScript/TypeScript JSDoc
@@ -143,6 +153,13 @@ Raises:
 - **Integration tests**: Test component interactions
 - **End-to-end tests**: Test complete user workflows
 - **Test file naming**: `test_[module_name].py`
+- **Always create Pytest unit tests for new features** (functions, classes, routes, etc).
+- **After updating any logic**, check whether existing unit tests need to be updated. If so, do it.
+- **Tests should live in a `/tests` folder** mirroring the main app structure.
+  - Include at least:
+    - 1 test for expected use
+    - 1 edge case
+    - 1 failure case
 
 ---
 
@@ -177,31 +194,49 @@ Core Components:
 - `ROADMAP.md` - Detailed 13-month roadmap
 
 **Current State**:
-- ✅ Research proposal complete
-- ✅ Architecture design complete
-- ✅ **Project structure initialized** (80+ directories, all packages ready)
-- ✅ **Development environment configured** (requirements.txt, environment.yml, setup.py)
-- ✅ **Git properly configured** (.gitignore, .gitattributes, LICENSE)
-- ✅ **Comprehensive configs created** (5 YAML files for all workflows)
-- 🔄 Implementation starting: Week 2 - Pattern generation
-- ⏳ Data generation pipeline: In progress
+- ✅ Research proposal complete (Phase 0)
+- ✅ Architecture design complete (Phase 0)
+- ✅ **Project structure initialized** (80+ directories, all packages ready) (Week 1)
+- ✅ **Development environment configured** (requirements.txt, environment.yml, setup.py) (Week 1)
+- ✅ **Git properly configured** (.gitignore, .gitattributes, LICENSE) (Week 1)
+- ✅ **Comprehensive configs created** (5 YAML files for all workflows) (Week 1)
+- ✅ **Pattern generation complete** (Week 2 - 2025-10-15)
+  - ✅ 3 pattern types: gratings, contact holes, isolated features
+  - ✅ Line edge roughness (LER) modeling
+  - ✅ Corner rounding for lithographic realism
+  - ✅ Comprehensive input validation
+  - ✅ Visualizer with physical scale display
+  - ✅ 39 unit tests, 100% passing
+  - ✅ Demo script with 7 scenarios
+  - ✅ Documentation (Week 2 Progress Report, Quick Start Guide)
+- 🔄 **Next: PSF/OTF modeling** (Week 3)
+- ⏳ Degradation pipeline: To be implemented Week 3-4
 - ⏳ Model implementations: To be implemented Month 3-6
 
 **Project Structure** (✅ Complete):
 ```
 src/
-├── data/          # Synthetic + real data handling ✅ initialized
-│   ├── synthetic/ # Pattern generation, PSF models, degradation
-│   └── real/      # Real data loading and preprocessing
+├── data/          # Synthetic + real data handling
+│   ├── synthetic/ # ✅ Pattern generation (Week 2), ⏳ PSF models, degradation (Week 3-4)
+│   └── real/      # ⏳ Real data loading and preprocessing
 ├── models/        # SR model implementations ✅ initialized
 │   ├── base/      # Abstract base classes
-│   ├── traditional/  # Deconvolution, Wiener filter
-│   ├── deep_learning/  # U-Net, RCAN, ESRGAN, SwinIR, HAT
-│   └── physics_informed/  # Physics-aware components
-├── training/      # Training infrastructure ✅ initialized
-├── evaluation/    # Metrics and benchmarking ✅ initialized
-├── analysis/      # Uncertainty, hallucination detection ✅ initialized
+│   ├── traditional/  # ⏳ Deconvolution, Wiener filter (Month 2)
+│   ├── deep_learning/  # ⏳ U-Net, RCAN, ESRGAN, SwinIR, HAT (Month 3-6)
+│   └── physics_informed/  # ⏳ Physics-aware components (Month 3-6)
+├── training/      # Training infrastructure ✅ initialized, ⏳ implementation (Month 3+)
+├── evaluation/    # Metrics and benchmarking ✅ initialized, ⏳ implementation (Month 2)
+├── analysis/      # Uncertainty, hallucination detection ✅ initialized, ⏳ implementation (Month 7+)
 └── utils/         # General utilities ✅ initialized
+
+tests/
+└── data/synthetic/ # ✅ Pattern generator tests (39 tests, 100% passing)
+
+scripts/
+└── demo_pattern_generation.py # ✅ Demo script (7 scenarios)
+
+docs/
+└── PATTERN_GENERATOR_QUICKSTART.md # ✅ Quick start guide
 ```
 
 ### Research Context
@@ -370,20 +405,41 @@ Types: feat, fix, docs, style, refactor, test, chore
 ✅ **Config files created** (5 comprehensive YAML files)
 ✅ **Week 1 complete** (2025-10-08)
 
-**In Progress (Week 2)**:
-🔄 Pattern generation implementation
+**In Progress (Week 3)**:
 🔄 PSF/OTF modeling
 🔄 Degradation pipeline
 
+**Completed (Week 2 - 2025-10-15)**:
+✅ Pattern generation implementation
+  - 3 pattern types with full validation
+  - Line edge roughness modeling
+  - Corner rounding for realism
+  - Comprehensive unit tests (39 tests)
+  - Demo script + documentation
+
 **Not Started**:
-⏳ Baseline methods (Week 3-4)
-⏳ Evaluation metrics (Week 3-4)
+⏳ Baseline methods (Month 2 Week 1-2)
+⏳ Evaluation metrics (Month 2 Week 2-3)
 ⏳ Model implementations (Month 3-6)
 ⏳ Training infrastructure (Month 3-8)
-⏳ Tests (Ongoing with each component)
 
 ### Recent Decisions
 **[Latest 3-5 technical decisions]**
+
+- **2025-10-15**: Week 2 pattern generation completed
+  - Implemented 3 pattern generators with comprehensive validation
+  - LER specification clarified (1σ vs 3σ for semiconductor metrology)
+  - Added corner rounding for lithographic realism
+  - Physical scale visualization (nanometers instead of pixels)
+  - Achieved 39/39 unit tests passing, production-ready code
+  - Created demo script (7 scenarios) + comprehensive documentation
+
+- **2025-10-15**: Testing and validation approach established
+  - Test-driven development (TDD) with pytest
+  - Expected cases, edge cases, and failure cases for each feature
+  - Fast test suite (<1 second for 39 tests)
+  - Reproducibility through seed control
+  - Integration tests for complete workflows
 
 - **2025-10-08**: Week 1 environment setup completed
   - Created complete project structure with 80+ directories
@@ -403,20 +459,19 @@ Types: feat, fix, docs, style, refactor, test, chore
   - Selected 6 baseline models: U-Net, RCAN, ESRGAN, SwinIR, Real-ESRGAN, HAT
   - Defined physics-informed loss function incorporating PSF consistency
 
-- **2025-10-07**: Technology stack finalized
-  - PyTorch 2.1.0 as primary framework (over TensorFlow)
-  - CUDA 12.1 for GPU acceleration (RTX 3060 12GB confirmed)
-  - Weights & Biases for experiment tracking
-  - ONNX/TensorRT for production deployment
-
 ### Next Priorities
 
-**Immediate (Month 1-2: Foundation)**:
-1. **Create project structure** - Initialize `src/` directory with all subdirectories
-2. **Implement data pipeline** - Synthetic pattern generation (gratings, contacts, logic cells)
-3. **PSF/OTF modeling** - Physics simulation for realistic image degradation
-4. **Baseline methods** - Richardson-Lucy deconvolution, Wiener filtering
-5. **Evaluation metrics** - PSNR, SSIM, CD error, edge placement error
+**Immediate (Week 3-4: Complete Data Pipeline)**:
+1. ✅ ~~Create project structure~~ - COMPLETE
+2. ✅ ~~Implement pattern generation~~ - COMPLETE (Week 2)
+3. **PSF/OTF modeling** - Airy disk, Hopkins formulation, wavelength effects
+4. **Degradation pipeline** - PSF convolution, noise models, downsampling
+5. **Generate 5,000 HR/LR pairs** - First synthetic dataset batch
+
+**Next (Month 2: Baseline Methods)**:
+1. **Traditional methods** - Richardson-Lucy deconvolution, Wiener filtering
+2. **Evaluation metrics** - PSNR, SSIM, CD error, edge placement error
+3. **Benchmark baseline performance** - Establish performance targets
 
 **Next Phase (Month 3-4: Core Models)**:
 1. Implement U-Net with physics embedding

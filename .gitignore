@@ -248,6 +248,7 @@ tmp/
 # Generated documentation
 docs/api_reference/_build/
 docs/api_reference/source/_autosummary/
+docs/planning/
 
 # Profiling outputs
 *.prof
