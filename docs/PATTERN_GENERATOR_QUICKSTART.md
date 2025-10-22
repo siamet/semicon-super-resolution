@@ -83,18 +83,41 @@ pattern, metadata = generator.generate(
 
 ## Advanced Features
 
-### Add Line Edge Roughness (LER)
+### Add Line Width Roughness (LWR) - **Recommended for Realistic Patterns**
 
 ```python
-# Generate with realistic edge roughness
+# Generate with realistic line width roughness (correlated edges)
+pattern, metadata = generator.generate(
+    pitch_nm=80.0,
+    duty_cycle=0.5,
+    add_lwr=True,
+    lwr_sigma_nm=1.5,              # 1σ = 1.5nm (typically < LER)
+    lwr_correlation_nm=30.0,       # 30nm correlation length
+    lwr_edge_correlation=0.5       # 0.5 = partially correlated edges
+)
+```
+
+**Key Points:**
+- **LWR models correlated roughness** on both edges (realistic for lithography)
+- `lwr_edge_correlation`: 0 = independent edges, 1 = identical edges, 0.3-0.7 = realistic
+- LWR captures shared effects: resist properties, developer uniformity
+- **Use LWR by default** for production datasets
+
+### Add Line Edge Roughness (LER) - **For Testing Only**
+
+```python
+# Generate with independent edge roughness (less realistic)
 pattern, metadata = generator.generate(
     pitch_nm=80.0,
     duty_cycle=0.5,
     add_ler=True,
     ler_sigma_nm=2.0,        # 1σ = 2nm (3σ = 6nm)
-    ler_correlation_nm=30.0  # 30nm correlation length
+    ler_correlation_nm=30.0,  # 30nm correlation length
+    add_lwr=False            # Disable LWR when using LER
 )
 ```
+
+**Note:** LER and LWR are mutually exclusive. LWR is preferred for realistic patterns.
 
 ### Add Corner Rounding
 
@@ -185,7 +208,10 @@ cd_target = generator.generate(width_nm=30.0, length_nm=200.0)
 |-----------|---------------|-------|
 | **Pitch** | 20-500 nm | Technology node dependent |
 | **Duty Cycle** | 0.3-0.7 | 0.5 = equal lines/spaces |
-| **LER σ** | 1-5 nm | 1σ value (multiply by 3 for 3σ) |
+| **LWR σ** | 1-3 nm | 1σ value, typically < LER (RECOMMENDED) |
+| **LWR Correlation** | 20-50 nm | Spatial correlation length |
+| **LWR Edge Correlation** | 0.3-0.7 | 0 = independent, 1 = identical edges |
+| **LER σ** | 1-5 nm | 1σ value (for testing only) |
 | **LER Correlation** | 20-50 nm | Spatial correlation length |
 | **Corner Rounding** | 3-10 nm | Depends on lithography |
 
@@ -214,8 +240,9 @@ for pitch in [40, 60, 80, 100]:
     pattern, metadata = generator.generate(
         pitch_nm=float(pitch),
         duty_cycle=0.5,
-        add_ler=True,
-        ler_sigma_nm=2.0
+        add_lwr=True,
+        lwr_sigma_nm=1.5,
+        lwr_edge_correlation=0.5
     )
     patterns.append(pattern)
     metadatas.append(metadata)
@@ -248,8 +275,9 @@ print(f"Saved to {output_dir}")
 python scripts/demo_pattern_generation.py
 
 # Run specific demo
-python scripts/demo_pattern_generation.py --demo 1  # Basic patterns
-python scripts/demo_pattern_generation.py --demo 3  # LER comparison
+python scripts/demo_pattern_generation.py --demo 1   # Basic patterns
+python scripts/demo_pattern_generation.py --demo 3   # LER comparison
+python scripts/demo_pattern_generation.py --demo 3b  # LWR vs LER (NEW!)
 
 # Save all outputs to directory
 python scripts/demo_pattern_generation.py --save-path results/demo_output

@@ -280,6 +280,12 @@ thesis/drafts/
 # Paper submissions (track manually)
 papers/submissions/
 
+# Research literature PDFs (too large for git, use Git LFS or external storage)
+# Keep README.md and notes, but ignore the actual PDF files
+docs/literature/**/*.pdf
+!docs/literature/README.md
+!docs/literature/**/*.md
+
 # Presentation files (large)
 *.pptx
 *.key

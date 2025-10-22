@@ -366,9 +366,124 @@ class TestPatternGeneratorBase:
     def test_corner_rounding_invalid_sigma(self, generator):
         """Test invalid blur sigma raises ValueError."""
         pattern = np.ones((64, 64))
-        
+
         with pytest.raises(ValueError, match="blur_sigma_nm must be positive"):
             generator.add_corner_rounding(pattern, blur_sigma_nm=-1.0)
+
+    def test_add_line_width_roughness(self, generator):
+        """Test LWR addition to pattern."""
+        # Create simple binary pattern with vertical lines
+        pattern = np.zeros((64, 64))
+        pattern[:, 20:40] = 1.0  # Vertical lines
+
+        pattern_with_lwr = generator.add_line_width_roughness(
+            pattern,
+            lwr_sigma_nm=1.5,
+            correlation_length_nm=20.0,
+            edge_correlation=0.5
+        )
+
+        # Pattern should have intermediate values at edges
+        assert 0 <= pattern_with_lwr.min() < 1
+        assert 0 < pattern_with_lwr.max() <= 1
+        # Patterns should be different
+        assert not np.allclose(pattern, pattern_with_lwr)
+
+    def test_lwr_edge_correlation_range(self, generator):
+        """Test LWR with different edge correlation values."""
+        pattern = np.zeros((64, 64))
+        pattern[:, 20:40] = 1.0
+
+        # Test independent edges (correlation = 0)
+        pattern_indep = generator.add_line_width_roughness(
+            pattern,
+            lwr_sigma_nm=1.5,
+            correlation_length_nm=20.0,
+            edge_correlation=0.0
+        )
+        assert pattern_indep.shape == pattern.shape
+
+        # Test fully correlated edges (correlation = 1)
+        pattern_corr = generator.add_line_width_roughness(
+            pattern,
+            lwr_sigma_nm=1.5,
+            correlation_length_nm=20.0,
+            edge_correlation=1.0
+        )
+        assert pattern_corr.shape == pattern.shape
+
+        # Test partial correlation (correlation = 0.5)
+        pattern_partial = generator.add_line_width_roughness(
+            pattern,
+            lwr_sigma_nm=1.5,
+            correlation_length_nm=20.0,
+            edge_correlation=0.5
+        )
+        assert pattern_partial.shape == pattern.shape
+
+    def test_lwr_invalid_sigma(self, generator):
+        """Test negative LWR sigma raises ValueError."""
+        pattern = np.ones((64, 64))
+
+        with pytest.raises(ValueError, match="lwr_sigma_nm must be non-negative"):
+            generator.add_line_width_roughness(pattern, lwr_sigma_nm=-1.0)
+
+    def test_lwr_invalid_correlation_length(self, generator):
+        """Test invalid LWR correlation length raises ValueError."""
+        pattern = np.ones((64, 64))
+
+        with pytest.raises(ValueError, match="correlation_length_nm must be positive"):
+            generator.add_line_width_roughness(
+                pattern,
+                lwr_sigma_nm=1.5,
+                correlation_length_nm=-10.0
+            )
+
+    def test_lwr_invalid_edge_correlation(self, generator):
+        """Test invalid edge correlation raises ValueError."""
+        pattern = np.ones((64, 64))
+
+        # Test edge_correlation > 1
+        with pytest.raises(ValueError, match="edge_correlation must be in"):
+            generator.add_line_width_roughness(
+                pattern,
+                lwr_sigma_nm=1.5,
+                edge_correlation=1.5
+            )
+
+        # Test edge_correlation < 0
+        with pytest.raises(ValueError, match="edge_correlation must be in"):
+            generator.add_line_width_roughness(
+                pattern,
+                lwr_sigma_nm=1.5,
+                edge_correlation=-0.5
+            )
+
+    def test_lwr_vs_ler_comparison(self, generator):
+        """Test that LWR and LER produce different results."""
+        pattern = np.zeros((64, 64))
+        pattern[:, 20:40] = 1.0
+
+        # Generate pattern with LER
+        pattern_ler = generator.add_line_edge_roughness(
+            pattern.copy(),
+            sigma_nm=2.0,
+            correlation_length_nm=20.0
+        )
+
+        # Generate pattern with LWR
+        pattern_lwr = generator.add_line_width_roughness(
+            pattern.copy(),
+            lwr_sigma_nm=1.5,
+            correlation_length_nm=20.0,
+            edge_correlation=0.5
+        )
+
+        # Both should differ from original
+        assert not np.allclose(pattern, pattern_ler)
+        assert not np.allclose(pattern, pattern_lwr)
+        # LWR and LER should produce different results
+        assert not np.allclose(pattern_ler, pattern_lwr)
 
 
 class TestFactoryFunction:

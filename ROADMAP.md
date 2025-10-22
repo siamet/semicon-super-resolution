@@ -93,18 +93,19 @@
 - [x] Create LICENSE (MIT)
 - [x] Create comprehensive config files
 
-**Week 2: Pattern Generation** ✅ COMPLETE (2025-10-15)
+**Week 2: Pattern Generation** ✅ COMPLETE (2025-10-15 + LWR enhancement 2025-10-22)
 - [x] Implement basic pattern generators (`src/data/synthetic/pattern_generator.py`)
   - [x] Line/space gratings (pitch 20-200nm, various duty cycles, orientation)
   - [x] Contact holes (circular, square arrays, regular/staggered)
   - [x] Isolated features (lines, spaces, posts)
 - [x] Add line edge roughness (LER) modeling (correlated Gaussian noise)
+- [x] Add line width roughness (LWR) modeling with edge correlation (2025-10-22)
 - [x] Add corner rounding for lithographic realism
 - [x] Comprehensive input validation and error handling
 - [x] Validate pattern generation with visualization (`src/data/synthetic/visualizer.py`)
   - [x] Simple view, profile view, statistics view, multi-pattern grid
   - [x] Physical scale display (nm instead of pixels)
-- [x] Create comprehensive unit tests (39 tests, 100% passing)
+- [x] Create comprehensive unit tests (45 tests, 100% passing, including 6 LWR tests)
 - [x] Create demo script with 7 example scenarios
 
 **Week 3: PSF/OTF Modeling**

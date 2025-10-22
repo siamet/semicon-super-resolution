@@ -107,6 +107,117 @@ class PatternGenerator:
 
         return pattern_with_noise
 
+    def add_line_width_roughness(
+        self,
+        pattern: np.ndarray,
+        lwr_sigma_nm: float = 1.5,
+        correlation_length_nm: float = 20.0,
+        edge_correlation: float = 0.5
+    ) -> np.ndarray:
+        """
+        Add line width roughness (LWR) to binary pattern.
+
+        LWR models correlated roughness on both edges of lines, simulating
+        realistic lithography variations. Unlike pure LER (independent edge noise),
+        LWR accounts for the fact that both edges of a line share some common
+        roughness sources (e.g., resist properties, developer non-uniformity).
+
+        Physics Background:
+        - For independent edges: LWR = LER / sqrt(2)
+        - Real lithography: edge_correlation ≈ 0.3-0.7 (partially correlated)
+        - Common causes: resist line edge profile, developer uniformity
+
+        Args:
+            pattern: Binary pattern (0 or 1)
+            lwr_sigma_nm: 1σ (standard deviation) LWR in nanometers
+                         Note: In semiconductor metrology, LWR is often reported as 3σ
+                         Typical values: 1-3nm (1σ) for advanced nodes
+            correlation_length_nm: Spatial correlation length along edge (typically 20-50nm)
+            edge_correlation: Correlation between left/right edges (0=independent, 1=identical)
+                            Typical range: 0.3-0.7 for realistic lithography
+                            Higher values = more common-mode variation
+
+        Returns:
+            pattern_with_lwr: Pattern with line width roughness added
+        """
+        # Validate inputs
+        if lwr_sigma_nm < 0:
+            raise ValueError(f"lwr_sigma_nm must be non-negative, got {lwr_sigma_nm}")
+        if correlation_length_nm <= 0:
+            raise ValueError(f"correlation_length_nm must be positive, got {correlation_length_nm}")
+        if not 0 <= edge_correlation <= 1:
+            raise ValueError(f"edge_correlation must be in [0, 1], got {edge_correlation}")
+
+        # Convert to pixels
+        sigma_pixels = lwr_sigma_nm / self.config.pixel_size_nm
+        correlation_pixels = correlation_length_nm / self.config.pixel_size_nm
+
+        # Find edges using gradient
+        grad_y, grad_x = np.gradient(pattern.astype(float))
+        edge_magnitude = np.sqrt(grad_x**2 + grad_y**2)
+        edges = edge_magnitude > 0.1
+
+        if not np.any(edges):
+            return pattern
+
+        # Generate two correlated noise fields for left/right edges
+        # Using Cholesky decomposition for correlation:
+        # noise_left = common_noise * sqrt(rho) + independent_left * sqrt(1-rho)
+        # noise_right = common_noise * sqrt(rho) + independent_right * sqrt(1-rho)
+
+        common_noise = self.rng.standard_normal(pattern.shape)
+        independent_left = self.rng.standard_normal(pattern.shape)
+        independent_right = self.rng.standard_normal(pattern.shape)
+
+        # Apply spatial correlation (blur)
+        common_noise = gaussian_filter(common_noise, sigma=correlation_pixels)
+        independent_left = gaussian_filter(independent_left, sigma=correlation_pixels)
+        independent_right = gaussian_filter(independent_right, sigma=correlation_pixels)
+
+        # Normalize to unit variance
+        common_noise = common_noise / np.std(common_noise)
+        independent_left = independent_left / np.std(independent_left)
+        independent_right = independent_right / np.std(independent_right)
+
+        # Combine with specified correlation
+        # Reason: sqrt ensures variance is preserved after combining correlated components
+        rho = edge_correlation
+        noise_left = common_noise * np.sqrt(rho) + independent_left * np.sqrt(1 - rho)
+        noise_right = common_noise * np.sqrt(rho) + independent_right * np.sqrt(1 - rho)
+
+        # Scale to desired LWR sigma
+        # For LWR, we want the width variation, so we apply opposite signs to each edge
+        noise_left = noise_left * sigma_pixels
+        noise_right = noise_right * sigma_pixels
+
+        # Detect edge orientation to apply appropriate noise direction
+        # Horizontal edges (grad_y dominant): apply noise in y direction
+        # Vertical edges (grad_x dominant): apply noise in x direction
+
+        # For simplicity, apply symmetric noise: expand/contract edges
+        # Positive noise = expand (push edges outward)
+        # Negative noise = contract (pull edges inward)
+
+        # Determine if pixel is on the "left" or "right" edge by gradient direction
+        # For vertical lines: left edge has positive grad_x, right edge has negative grad_x
+        # For horizontal lines: top edge has positive grad_y, bottom edge has negative grad_y
+
+        edge_sign = np.sign(grad_x + grad_y + 1e-10)  # Avoid division by zero
+
+        # Apply correlated noise
+        # Left edges (positive gradient) get noise_left
+        # Right edges (negative gradient) get noise_right (opposite sign for width variation)
+        combined_noise = np.where(edge_sign > 0, noise_left, -noise_right)
+
+        # Apply noise only at edges
+        pattern_float = pattern.astype(float)
+        pattern_with_noise = pattern_float + combined_noise * edges
+
+        # Clip to [0, 1]
+        pattern_with_noise = np.clip(pattern_with_noise, 0, 1)
+
+        return pattern_with_noise
+
     def add_corner_rounding(
         self,
         pattern: np.ndarray,
@@ -142,9 +253,13 @@ class GratingGenerator(PatternGenerator):
         pitch_nm: float = 100.0,
         duty_cycle: float = 0.5,
         orientation_deg: float = 0.0,
-        add_ler: bool = True,
+        add_ler: bool = False,
         ler_sigma_nm: float = 2.0,
-        ler_correlation_nm: float = 20.0
+        ler_correlation_nm: float = 20.0,
+        add_lwr: bool = True,
+        lwr_sigma_nm: float = 1.5,
+        lwr_correlation_nm: float = 20.0,
+        lwr_edge_correlation: float = 0.5
     ) -> Tuple[np.ndarray, Dict[str, Any]]:
         """
         Generate a line/space grating pattern.
@@ -153,9 +268,14 @@ class GratingGenerator(PatternGenerator):
             pitch_nm: Grating pitch (period) in nanometers (must be > 0)
             duty_cycle: Fraction of period occupied by lines (0 to 1)
             orientation_deg: Rotation angle in degrees (0=vertical lines)
-            add_ler: Whether to add line edge roughness
+            add_ler: Whether to add line edge roughness (independent edge noise)
             ler_sigma_nm: LER 1σ standard deviation in nanometers
             ler_correlation_nm: LER correlation length in nanometers
+            add_lwr: Whether to add line width roughness (correlated edge noise)
+                    Note: Use LWR for realistic lithography (default), or LER for testing
+            lwr_sigma_nm: LWR 1σ standard deviation in nanometers (typically < LER)
+            lwr_correlation_nm: LWR spatial correlation length in nanometers
+            lwr_edge_correlation: LWR edge-to-edge correlation (0-1, typical 0.3-0.7)
 
         Returns:
             pattern: 2D array with values in [0, 1], shape (image_size, image_size)
@@ -189,8 +309,16 @@ class GratingGenerator(PatternGenerator):
         phase = (X % pitch_pixels) / pitch_pixels
         pattern = (phase < duty_cycle).astype(float)
 
-        # Add LER before rotation for realistic edge variation
-        if add_ler:
+        # Add roughness before rotation for realistic edge variation
+        # Note: LWR and LER are mutually exclusive - use LWR for realistic patterns
+        if add_lwr:
+            pattern = self.add_line_width_roughness(
+                pattern,
+                lwr_sigma_nm=lwr_sigma_nm,
+                correlation_length_nm=lwr_correlation_nm,
+                edge_correlation=lwr_edge_correlation
+            )
+        elif add_ler:
             pattern = self.add_line_edge_roughness(
                 pattern,
                 sigma_nm=ler_sigma_nm,
@@ -210,6 +338,10 @@ class GratingGenerator(PatternGenerator):
             'add_ler': add_ler,
             'ler_sigma_nm': ler_sigma_nm if add_ler else 0.0,
             'ler_correlation_nm': ler_correlation_nm if add_ler else 0.0,
+            'add_lwr': add_lwr,
+            'lwr_sigma_nm': lwr_sigma_nm if add_lwr else 0.0,
+            'lwr_correlation_nm': lwr_correlation_nm if add_lwr else 0.0,
+            'lwr_edge_correlation': lwr_edge_correlation if add_lwr else 0.0,
             'image_size': size,
             'pixel_size_nm': self.config.pixel_size_nm
         }
@@ -226,9 +358,13 @@ class ContactHoleGenerator(PatternGenerator):
         pitch_nm: Optional[float] = None,
         shape: str = 'circular',
         array_type: str = 'regular',
-        add_ler: bool = True,
+        add_ler: bool = False,
         ler_sigma_nm: float = 2.0,
-        ler_correlation_nm: float = 20.0
+        ler_correlation_nm: float = 20.0,
+        add_lwr: bool = True,
+        lwr_sigma_nm: float = 1.5,
+        lwr_correlation_nm: float = 20.0,
+        lwr_edge_correlation: float = 0.5
     ) -> Tuple[np.ndarray, Dict[str, Any]]:
         """
         Generate contact hole array pattern.
@@ -238,9 +374,13 @@ class ContactHoleGenerator(PatternGenerator):
             pitch_nm: Array pitch (if None, uses 2× diameter)
             shape: 'circular' or 'square'
             array_type: 'regular' or 'staggered'
-            add_ler: Whether to add line edge roughness
+            add_ler: Whether to add line edge roughness (independent edge noise)
             ler_sigma_nm: LER 1σ standard deviation in nanometers
             ler_correlation_nm: LER correlation length in nanometers
+            add_lwr: Whether to add line width roughness (correlated edge noise)
+            lwr_sigma_nm: LWR 1σ standard deviation in nanometers
+            lwr_correlation_nm: LWR spatial correlation length in nanometers
+            lwr_edge_correlation: LWR edge-to-edge correlation (0-1)
 
         Returns:
             pattern: 2D array with values in [0, 1]
@@ -310,8 +450,15 @@ class ContactHoleGenerator(PatternGenerator):
 
                 pattern = np.maximum(pattern, contact)
 
-        # Add LER
-        if add_ler:
+        # Add roughness (LWR or LER)
+        if add_lwr:
+            pattern = self.add_line_width_roughness(
+                pattern,
+                lwr_sigma_nm=lwr_sigma_nm,
+                correlation_length_nm=lwr_correlation_nm,
+                edge_correlation=lwr_edge_correlation
+            )
+        elif add_ler:
             pattern = self.add_line_edge_roughness(
                 pattern,
                 sigma_nm=ler_sigma_nm,
@@ -327,6 +474,10 @@ class ContactHoleGenerator(PatternGenerator):
             'add_ler': add_ler,
             'ler_sigma_nm': ler_sigma_nm if add_ler else 0.0,
             'ler_correlation_nm': ler_correlation_nm if add_ler else 0.0,
+            'add_lwr': add_lwr,
+            'lwr_sigma_nm': lwr_sigma_nm if add_lwr else 0.0,
+            'lwr_correlation_nm': lwr_correlation_nm if add_lwr else 0.0,
+            'lwr_edge_correlation': lwr_edge_correlation if add_lwr else 0.0,
             'image_size': size,
             'pixel_size_nm': self.config.pixel_size_nm
         }
@@ -343,9 +494,13 @@ class IsolatedFeatureGenerator(PatternGenerator):
         width_nm: float = 50.0,
         length_nm: Optional[float] = None,
         orientation_deg: float = 0.0,
-        add_ler: bool = True,
+        add_ler: bool = False,
         ler_sigma_nm: float = 2.0,
-        ler_correlation_nm: float = 20.0
+        ler_correlation_nm: float = 20.0,
+        add_lwr: bool = True,
+        lwr_sigma_nm: float = 1.5,
+        lwr_correlation_nm: float = 20.0,
+        lwr_edge_correlation: float = 0.5
     ) -> Tuple[np.ndarray, Dict[str, Any]]:
         """
         Generate isolated feature pattern.
@@ -355,9 +510,13 @@ class IsolatedFeatureGenerator(PatternGenerator):
             width_nm: Feature width in nanometers (must be > 0)
             length_nm: Feature length (if None, uses 70% of field size for lines)
             orientation_deg: Rotation angle in degrees
-            add_ler: Whether to add line edge roughness
+            add_ler: Whether to add line edge roughness (independent edge noise)
             ler_sigma_nm: LER 1σ standard deviation in nanometers
             ler_correlation_nm: LER correlation length in nanometers
+            add_lwr: Whether to add line width roughness (correlated edge noise)
+            lwr_sigma_nm: LWR 1σ standard deviation in nanometers
+            lwr_correlation_nm: LWR spatial correlation length in nanometers
+            lwr_edge_correlation: LWR edge-to-edge correlation (0-1)
 
         Returns:
             pattern: 2D array with values in [0, 1]
@@ -417,8 +576,15 @@ class IsolatedFeatureGenerator(PatternGenerator):
         else:
             pattern[feature_mask] = 1.0  # Add feature
 
-        # Add LER before rotation
-        if add_ler:
+        # Add roughness before rotation
+        if add_lwr:
+            pattern = self.add_line_width_roughness(
+                pattern,
+                lwr_sigma_nm=lwr_sigma_nm,
+                correlation_length_nm=lwr_correlation_nm,
+                edge_correlation=lwr_edge_correlation
+            )
+        elif add_ler:
             pattern = self.add_line_edge_roughness(
                 pattern,
                 sigma_nm=ler_sigma_nm,
@@ -439,6 +605,10 @@ class IsolatedFeatureGenerator(PatternGenerator):
             'add_ler': add_ler,
             'ler_sigma_nm': ler_sigma_nm if add_ler else 0.0,
             'ler_correlation_nm': ler_correlation_nm if add_ler else 0.0,
+            'add_lwr': add_lwr,
+            'lwr_sigma_nm': lwr_sigma_nm if add_lwr else 0.0,
+            'lwr_correlation_nm': lwr_correlation_nm if add_lwr else 0.0,
+            'lwr_edge_correlation': lwr_edge_correlation if add_lwr else 0.0,
             'image_size': size,
             'pixel_size_nm': self.config.pixel_size_nm
         }

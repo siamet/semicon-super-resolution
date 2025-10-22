@@ -54,6 +54,7 @@ This research investigates physics-informed deep learning super-resolution techn
 #### Week 2: Pattern Generation (2025-10-15)
 - [x] **Pattern generator module** (`src/data/synthetic/pattern_generator.py`)
   - [x] 3 pattern types: gratings, contact holes, isolated features
+  - [x] Line width roughness (LWR) modeling with edge correlation
   - [x] Line edge roughness (LER) modeling
   - [x] Corner rounding for lithographic realism
   - [x] Comprehensive input validation
@@ -61,8 +62,8 @@ This research investigates physics-informed deep learning super-resolution techn
 - [x] **Visualizer module** (`src/data/synthetic/visualizer.py`)
   - [x] 4 visualization modes (simple, profile, stats, multi-pattern)
   - [x] Physical scale display (nanometers)
-- [x] **Unit tests**: 39 tests, 100% passing
-- [x] **Demo script**: 7 example scenarios
+- [x] **Unit tests**: 45 tests, 100% passing
+- [x] **Demo script**: 8 example scenarios (including LWR vs LER)
 - [x] **Documentation**: Progress report + Quick Start Guide
 
 ### 🔄 In Progress (Week 3)
@@ -265,6 +266,14 @@ semicon-super-resolution/
 │
 ├── docs/                          # Documentation
 │   ├── architecture/              # Architecture design
+│   ├── literature/                # Research papers & references
+│   │   ├── super_resolution/      # SR papers (SwinIR, HAT, etc.)
+│   │   ├── semiconductor/         # Semiconductor metrology papers
+│   │   ├── physics_informed/      # Physics-informed ML papers
+│   │   ├── hallucination/         # Hallucination detection papers
+│   │   ├── datasets/              # Dataset papers
+│   │   ├── reviews/               # Literature review notes
+│   │   └── README.md              # Bibliography and reading tracker
 │   ├── installation.md           # Setup instructions
 │   └── api_reference/            # API documentation
 │

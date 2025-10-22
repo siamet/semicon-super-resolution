@@ -192,6 +192,91 @@ def demo_line_edge_roughness(save_path: Path = None):
         print(f"   ✓ Saved to {save_file2}")
 
 
+def demo_lwr_vs_ler(save_path: Path = None):
+    """Demonstrate LWR vs LER comparison."""
+    print("\n" + "="*60)
+    print("DEMO 3B: Line Width Roughness (LWR) vs Line Edge Roughness (LER)")
+    print("="*60)
+
+    config = PatternConfig(image_size=256, pixel_size_nm=2.0)
+    generator = GratingGenerator(config)
+    visualizer = PatternVisualizer(figsize=(15, 5))
+
+    print("\nComparing three roughness models:")
+    print("   1. Ideal pattern (no roughness)")
+    print("   2. LER (independent edge noise)")
+    print("   3. LWR (correlated edge noise - more realistic)")
+
+    # Ideal pattern
+    print("   - Generating ideal pattern...")
+    pattern_ideal, meta_ideal = generator.generate(
+        pitch_nm=80.0,
+        duty_cycle=0.5,
+        add_ler=False,
+        add_lwr=False
+    )
+
+    # Pattern with LER (independent edges)
+    print("   - Generating pattern with LER (independent edges)...")
+    pattern_ler, meta_ler = generator.generate(
+        pitch_nm=80.0,
+        duty_cycle=0.5,
+        add_ler=True,
+        ler_sigma_nm=2.0,
+        ler_correlation_nm=30.0,
+        add_lwr=False
+    )
+
+    # Pattern with LWR (correlated edges)
+    print("   - Generating pattern with LWR (correlated edges, rho=0.5)...")
+    pattern_lwr, meta_lwr = generator.generate(
+        pitch_nm=80.0,
+        duty_cycle=0.5,
+        add_ler=False,
+        add_lwr=True,
+        lwr_sigma_nm=1.5,
+        lwr_correlation_nm=30.0,
+        lwr_edge_correlation=0.5
+    )
+
+    # Create side-by-side comparison
+    import matplotlib.pyplot as plt
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+    # Ideal
+    ax = axes[0]
+    ax.imshow(pattern_ideal, cmap='gray', origin='upper')
+    ax.set_title("Ideal (No Roughness)", fontsize=12, fontweight='bold')
+    ax.axis('off')
+
+    # LER
+    ax = axes[1]
+    ax.imshow(pattern_ler, cmap='gray', origin='upper')
+    ax.set_title("LER (Independent Edges)\nσ=2.0nm", fontsize=12, fontweight='bold')
+    ax.axis('off')
+
+    # LWR
+    ax = axes[2]
+    ax.imshow(pattern_lwr, cmap='gray', origin='upper')
+    ax.set_title("LWR (Correlated Edges)\nσ=1.5nm, ρ=0.5", fontsize=12, fontweight='bold')
+    ax.axis('off')
+
+    plt.tight_layout()
+
+    if save_path:
+        save_file = save_path / "demo3b_lwr_vs_ler.png"
+        plt.savefig(save_file, dpi=150, bbox_inches='tight')
+        print(f"   ✓ Saved to {save_file}")
+        plt.close()
+    else:
+        plt.show()
+
+    print("\n   Key Differences:")
+    print("   - LER: Each edge varies independently (unrealistic)")
+    print("   - LWR: Edges are partially correlated (realistic lithography)")
+    print("   - LWR captures width variations from shared resist/developer effects")
+
+
 def demo_contact_hole_arrays(save_path: Path = None):
     """Demonstrate contact hole array variations."""
     print("\n" + "="*60)
@@ -369,7 +454,7 @@ def main():
     parser.add_argument(
         '--demo',
         type=str,
-        choices=['all', '1', '2', '3', '4', '5', '6', '7'],
+        choices=['all', '1', '2', '3', '3b', '4', '5', '6', '7'],
         default='all',
         help='Which demo to run (default: all)'
     )
@@ -395,6 +480,7 @@ def main():
         '1': demo_basic_patterns,
         '2': demo_grating_variations,
         '3': demo_line_edge_roughness,
+        '3b': demo_lwr_vs_ler,
         '4': demo_contact_hole_arrays,
         '5': demo_corner_rounding,
         '6': demo_statistics_analysis,
