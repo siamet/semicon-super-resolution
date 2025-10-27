@@ -15,13 +15,13 @@
 | Phase | Timeline | Status | Progress |
 |-------|----------|--------|----------|
 | **Phase 0: Planning** | Pre-Month 1 | ✅ Complete | 100% |
-| **Phase 1: Foundation** | Month 1-2 | 🔄 In Progress | 29% |
+| **Phase 1: Foundation** | Month 1-2 | 🔄 In Progress | 43% |
 | **Phase 2: Model Development** | Month 3-6 | ⏳ Not Started | 0% |
 | **Phase 3: Training & Validation** | Month 7-10 | ⏳ Not Started | 0% |
 | **Phase 4: Analysis & Writing** | Month 11-13 | ⏳ Not Started | 0% |
 
-**Overall Progress**: 29% Phase 1 | 100% Planning
-**Current Month**: 1, Week 2 Complete
+**Overall Progress**: 43% Phase 1 | 100% Planning
+**Current Month**: 1, Week 3 Complete
 **Start Date**: 2025-10-08
 **Expected Completion**: 2026-11 to 2027-04 (13-18 months)
 
@@ -75,7 +75,7 @@
 
 **Timeline**: Month 1-2
 **Status**: 🔄 In Progress
-**Progress**: 2/7 major tasks complete (29%)
+**Progress**: 3/7 major tasks complete (43%)
 
 #### Month 1: Synthetic Data Pipeline
 
@@ -108,14 +108,17 @@
 - [x] Create comprehensive unit tests (45 tests, 100% passing, including 6 LWR tests)
 - [x] Create demo script with 7 example scenarios
 
-**Week 3: PSF/OTF Modeling**
-- [ ] Implement PSF model (`src/data/synthetic/psf_models.py`)
-  - [ ] Airy disk for coherent illumination
-  - [ ] Hopkins partial coherence formulation
-  - [ ] Wavelength-dependent chromatic aberration
-- [ ] Implement OTF computation (FFT of PSF)
-- [ ] Validate against theoretical resolution limits
-- [ ] Test PSF convolution on sample patterns
+**Week 3: PSF/OTF Modeling** ✅ COMPLETE (2025-10-23)
+- [x] Implement PSF model (`src/data/synthetic/psf_models.py`)
+  - [x] Airy disk for coherent illumination
+  - [x] Hopkins partial coherence formulation
+  - [x] Wavelength-dependent chromatic aberration
+  - [x] Aberration modeling (Gaussian approximation for spherical, coma, astigmatism)
+- [x] Implement OTF computation (FFT of PSF)
+- [x] Validate against theoretical resolution limits
+- [x] Test PSF convolution on sample patterns
+- [x] Create comprehensive unit tests (43 tests, 100% passing)
+- [x] Create demo script for PSF analysis and pattern degradation
 
 **Week 4: Degradation Pipeline**
 - [ ] Implement noise models (`src/data/synthetic/noise_models.py`)

@@ -209,8 +209,15 @@ Core Components:
   - ✅ 39 unit tests, 100% passing
   - ✅ Demo script with 7 scenarios
   - ✅ Documentation (Week 2 Progress Report, Quick Start Guide)
-- 🔄 **Next: PSF/OTF modeling** (Week 3)
-- ⏳ Degradation pipeline: To be implemented Week 3-4
+- ✅ **PSF/OTF modeling complete** (Week 3 - 2025-10-23)
+  - ✅ 4 PSF models: Airy, Hopkins, Chromatic, Aberration
+  - ✅ OTF/MTF/PTF computation
+  - ✅ Theoretical validation (Rayleigh, cutoff frequencies)
+  - ✅ 43 unit tests, 100% passing
+  - ✅ Demo script with 6 visualization scenarios
+  - ✅ Design decisions documented (simplified Hopkins & Gaussian aberrations)
+- 🔄 **Next: Degradation pipeline** (Week 4)
+- ⏳ Degradation pipeline: To be implemented Week 4
 - ⏳ Model implementations: To be implemented Month 3-6
 
 **Project Structure** (✅ Complete):

@@ -7,8 +7,6 @@ various semiconductor patterns including gratings, contact holes, and isolated f
 
 Usage:
     python scripts/demo_pattern_generation.py [--save-path OUTPUT_DIR]
-
-Author: Physics-Informed SR Research Project
 """
 
 import argparse
